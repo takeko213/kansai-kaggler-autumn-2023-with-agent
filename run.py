@@ -29,7 +29,7 @@ df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 for agg_column in ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeToNearestStation"]:
     for agg_func in ["mean", "max", "min", "std"]:
         df[f"Munic_{agg_column}_{agg_func}"] = df.groupby("Municipality")[agg_column].transform(agg_func)
-
+        
 for agg_column in ["FloorAreaRatio", "CoverageRatio", "BuildingYear", "TotalFloorArea"]:
     for agg_func in ["mean", "max", "min", "std"]:
         df[f"Station_{agg_column}_{agg_func}"] = df.groupby("NearestStation")[agg_column].transform(agg_func)
@@ -72,11 +72,12 @@ df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRa
 
 df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
 
-# PrefectureのCountEncoding特徴量を追加
 df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 
-# CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
+
+# NearestStationごとのCityPlanningのCountEncoding特徴量を追加
+df["NearestStation_CityPlanning_count"] = df["NearestStation"].map(df["NearestStation"].value_counts())
 
 target = "TradePrice"
 not_use_cols = [
@@ -85,7 +86,6 @@ not_use_cols = [
     "MinTimeToNearestStation", target
 ]
 features = [c for c in df.columns if c not in not_use_cols]
-
 df[target] = np.log1p(df[target])
 train = df[df["Prefecture"]!="Osaka Prefecture"].reset_index(drop=True)
 test = df[df["Prefecture"]=="Osaka Prefecture"].reset_index(drop=True)
