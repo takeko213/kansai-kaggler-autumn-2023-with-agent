@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
 import wandb
 from wandb.lightgbm import log_summary
 import lightgbm as lgb
@@ -67,6 +69,13 @@ df[cat_cols] = enc.transform(df[cat_cols])
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
 df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x : len(str(x).split(" ")))
+tfidf = TfidfVectorizer(max_features=500)
+tfidf_vec = tfidf.fit_transform(df['Ci_wiki_description'].values)
+svd = TruncatedSVD(n_components=15, random_state=cfg.seed)
+tfidf_svd = svd.fit_transform(tfidf_vec)
+
+for i in range(15):
+    df[f"Ci_wiki_description_svd_{i}"] = tfidf_svd[:, i]
 
 df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
