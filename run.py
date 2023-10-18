@@ -31,6 +31,12 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
+#新たな特徴量生成
+df["Munic_Conv_Cvg_Ratio"] = df.groupby("Municipality")["CoverageRatio"].transform(lambda x: x.sum() / len(x))
+df["Munic_Conv_Cvg_Ratio_max"] = df.groupby("Municipality")["CoverageRatio"].transform("max")
+df["Munic_Conv_Cvg_Ratio_min"] = df.groupby("Municipality")["CoverageRatio"].transform("min")
+df["Munic_Conv_Cvg_Ratio_std"] = df.groupby("Municipality")["CoverageRatio"].transform("std")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
