@@ -66,6 +66,12 @@ df["Station_BuildingYear_max"] = df.groupby("NearestStation")["BuildingYear"].tr
 df["Station_BuildingYear_min"] = df.groupby("NearestStation")["BuildingYear"].transform("min")
 df["Station_BuildingYear_std"] = df.groupby("NearestStation")["BuildingYear"].transform("std")
 
+# NearestStationごとのTotalFloorAreaの統計量を追加
+df["Station_TotalFloorArea_mean"] = df.groupby("NearestStation")["TotalFloorArea"].transform("mean")
+df["Station_TotalFloorArea_max"] = df.groupby("NearestStation")["TotalFloorArea"].transform("max")
+df["Station_TotalFloorArea_min"] = df.groupby("NearestStation")["TotalFloorArea"].transform("min")
+df["Station_TotalFloorArea_std"] = df.groupby("NearestStation")["TotalFloorArea"].transform("std")
+
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
@@ -125,7 +131,7 @@ for valid_pref in prefs:
                           lgb.early_stopping(stopping_rounds=100, verbose=True), 
                           lgb.log_evaluation(100)
                           ])
-
+    
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
