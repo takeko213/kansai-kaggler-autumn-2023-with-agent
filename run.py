@@ -54,6 +54,8 @@ df["NearestStation_Frontage_rank"] = df.groupby("NearestStation")["Frontage"].ra
 
 df["NearestStation_Area_rank"] = df.groupby("NearestStation")["Area"].rank()
 
+df["DistinctName_Frontage_rank"] = df.groupby("DistinctName")["Frontage"].rank()
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
