@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import LabelEncoder
 import wandb
 from wandb.lightgbm import log_summary
 import lightgbm as lgb
@@ -60,9 +60,11 @@ cat_cols = [
     "Renovation", "Remarks"
 ]
 
-enc = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
-enc.fit(org_train[cat_cols])
-df[cat_cols] = enc.transform(df[cat_cols])
+for c in cat_cols:
+    le = LabelEncoder()
+    le.fit(pd.concat([org_train[c], org_test[c]]))
+    df[c] = le.transform(df[c])
+    df[c] = df[c].astype('category')
 
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
