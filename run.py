@@ -78,6 +78,10 @@ df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 # CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
 
+# Frontageの統計量をDistinctNameごとに追加
+for agg_func in ["mean", "max", "min", "std"]:
+    df[f"DistinctName_Frontage_{agg_func}"] = df.groupby("DistinctName")["Frontage"].transform(agg_func)
+
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
