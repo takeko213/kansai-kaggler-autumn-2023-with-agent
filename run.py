@@ -28,7 +28,7 @@ df = pd.concat([org_train, org_test], ignore_index=True)
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
-#新たな特徴量生成
+# 新たな特徴量生成
 df["Munic_Conv_Cvg_Ratio"] = df.groupby("Municipality")["CoverageRatio"].transform(lambda x: x.sum() / len(x))
 df["Munic_Conv_Cvg_Ratio_max"] = df.groupby("Municipality")["CoverageRatio"].transform("max")
 df["Munic_Conv_Cvg_Ratio_min"] = df.groupby("Municipality")["CoverageRatio"].transform("min")
@@ -38,17 +38,23 @@ df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
 df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
 df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
 
-#TotalFloorAreaの特徴量追加
+# TotalFloorAreaの特徴量追加
 df["Munic_TotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
 df["Munic_TotalFloorArea_max"] = df.groupby("Municipality")["TotalFloorArea"].transform("max")
 df["Munic_TotalFloorArea_min"] = df.groupby("Municipality")["TotalFloorArea"].transform("min")
 df["Munic_TotalFloorArea_std"] = df.groupby("Municipality")["TotalFloorArea"].transform("std")
 
-#Frontageの特徴量追加
+# Frontageの特徴量追加
 df["Munic_Frontage_mean"] = df.groupby("Municipality")["Frontage"].transform("mean")
 df["Munic_Frontage_max"] = df.groupby("Municipality")["Frontage"].transform("max")
 df["Munic_Frontage_min"] = df.groupby("Municipality")["Frontage"].transform("min")
 df["Munic_Frontage_std"] = df.groupby("Municipality")["Frontage"].transform("std")
+
+# Areaの特徴量追加
+df["Munic_Area_mean"] = df.groupby("Municipality")["Area"].transform("mean")
+df["Munic_Area_max"] = df.groupby("Municipality")["Area"].transform("max")
+df["Munic_Area_min"] = df.groupby("Municipality")["Area"].transform("min")
+df["Munic_Area_std"] = df.groupby("Municipality")["Area"].transform("std")
 
 # 特徴量生成
 cat_cols = [
