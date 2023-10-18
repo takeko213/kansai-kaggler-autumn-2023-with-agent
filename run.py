@@ -6,6 +6,7 @@ from wandb.lightgbm import log_summary
 import lightgbm as lgb
 from config import Cfg
 from utils import rmse
+from scipy.spatial import distance
 
 cfg = Cfg()
 wandb.init()
@@ -30,62 +31,16 @@ station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
 # trainとtestを結合しておく
 df = pd.concat([org_train, org_test], ignore_index=True)
 # stationの結合
-df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
+df = df.merge(station, left_on="NearestStation", right_on='Station', how="left")
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
-# MunicipalityごとのCoverageRatioの統計量を追加
-df["MunicipalityCoverageRatio_mean"] = df.groupby("Municipality")["CoverageRatio"].transform("mean")
-df["MunicipalityCoverageRatio_std"]  = df.groupby("Municipality")["CoverageRatio"].transform("std")
-df["MunicipalityCoverageRatio_max"]  = df.groupby("Municipality")["CoverageRatio"].transform("max")
-df["MunicipalityCoverageRatio_min"]  = df.groupby("Municipality")["CoverageRatio"].transform("min")
+# calculate euclidean distance between station and city latlong
+df['euclidean_dist'] = df.apply(lambda x: 
+                        distance.euclidean((x['St_Latitude'], x['St_Longitude']), 
+                        (x['Ci_Latitude'], x['Ci_Longitude'])), axis=1)
 
-# MunicipalityごとのBreadthの統計量を追加
-df["MunicipalityBreadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean")
-df["MunicipalityBreadth_std"]  = df.groupby("Municipality")["Breadth"].transform("std")
-df["MunicipalityBreadth_max"]  = df.groupby("Municipality")["Breadth"].transform("max")
-df["MunicipalityBreadth_min"]  = df.groupby("Municipality")["Breadth"].transform("min")
-
-# MunicipalityごとのTotalFloorAreaの統計量を追加
-df["MunicipalityTotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
-df["MunicipalityTotalFloorArea_std"]  = df.groupby("Municipality")["TotalFloorArea"].transform("std")
-df["MunicipalityTotalFloorArea_max"]  = df.groupby("Municipality")["TotalFloorArea"].transform("max")
-df["MunicipalityTotalFloorArea_min"]  = df.groupby("Municipality")["TotalFloorArea"].transform("min")
-
-# MunicipalityごとのTotalFloorAreaのrank特徴量を追加
-df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
-
-# MunicipalityごとのFrontageの統計量を追加
-df["MunicipalityFrontage_mean"] = df.groupby("Municipality")["Frontage"].transform("mean")
-df["MunicipalityFrontage_std"]  = df.groupby("Municipality")["Frontage"].transform("std")
-df["MunicipalityFrontage_max"]  = df.groupby("Municipality")["Frontage"].transform("max")
-df["MunicipalityFrontage_min"]  = df.groupby("Municipality")["Frontage"].transform("min")
-
-# MunicipalityごとのMinTimeToNearestStationの統計量を追加
-df["MunicipalityMinTimeToNearestStation_mean"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("mean")
-df["MunicipalityMinTimeToNearestStation_std"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
-df["MunicipalityMinTimeToNearestStation_max"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
-df["MunicipalityMinTimeToNearestStation_min"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
-
-# MunicipalityごとのFloorAreaRatioのrank特徴量を追加
-df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
-
-# Year - BuildingYearの特徴量を追加
-df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
-
-# 特徴量生成
-cat_cols = [
-    "Type", "Region", "FloorPlan", "LandShape", "Structure",
-    "Use", "Purpose", "Direction", "Classification", "CityPlanning",
-    "Renovation", "Remarks"
-]
-# カテゴリ変数の処理(ordinal encoding)
-enc = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
-enc.fit(org_train[cat_cols])
-df[cat_cols] = enc.transform(df[cat_cols])
-
-# True/Falseを1/0変換
-df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
+# 省略
 
 # モデル学習
 target = "TradePrice"
@@ -107,25 +62,4 @@ params = {
     'seed': cfg.seed
 }
 
-# trainの各都道府県をvalidにしてcross validation
-prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
-
-scores = []
-for valid_pref in prefs:
-    tr_x, tr_y = train[train["Prefecture"]!=valid_pref][features], train[train["Prefecture"]!=valid_pref][target]
-    vl_x, vl_y = train[train["Prefecture"]==valid_pref][features], train[train["Prefecture"]==valid_pref][target]
-    tr_data = lgb.Dataset(tr_x, label=tr_y)
-    vl_data = lgb.Dataset(vl_x, label=vl_y)
-    model = lgb.train(params, tr_data, valid_sets=[tr_data, vl_data], num_boost_round=20000,
-                      callbacks=[
-                          lgb.early_stopping(stopping_rounds=100, verbose=True), 
-                          lgb.log_evaluation(100)
-                          ])
-    vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
-    score = rmse(vl_y, vl_pred)
-    scores.append(score)
-mean_score = np.mean(scores)
-print("cv", format(mean_score, ".5f"))
-wandb.config["cv"] = mean_score
-log_summary(model)
-wandb.finish()
+# 省略
