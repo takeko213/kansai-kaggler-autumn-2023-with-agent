@@ -52,6 +52,8 @@ df["Munic_MinTimeToNearestStation_std"] = df.groupby("Municipality")["MinTimeToN
 
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
+# MunicipalityごとのBuildingYearのrank特徴量を追加
+df["Municipality_BuildingYear_rank"] = df.groupby("Municipality")["BuildingYear"].rank()
 
 # 特徴量生成
 cat_cols = [
