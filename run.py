@@ -34,41 +34,18 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
-# MunicipalityごとのCoverageRatioの統計量を追加
-df["MunicipalityCoverageRatio_mean"] = df.groupby("Municipality")["CoverageRatio"].transform("mean")
-df["MunicipalityCoverageRatio_std"]  = df.groupby("Municipality")["CoverageRatio"].transform("std")
-df["MunicipalityCoverageRatio_max"]  = df.groupby("Municipality")["CoverageRatio"].transform("max")
-df["MunicipalityCoverageRatio_min"]  = df.groupby("Municipality")["CoverageRatio"].transform("min")
+# 各種統計量を追加
+group_cols = ["MunicipalityCoverageRatio", "MunicipalityBreadth", "MunicipalityTotalFloorArea", "MunicipalityFrontage", "MunicipalityMinTimeToNearestStation"]
+for col in group_cols:
+    df[f"{col}_mean"] = df.groupby("Municipality")[col].transform("mean")
+    df[f"{col}_std"]  = df.groupby("Municipality")[col].transform("std")
+    df[f"{col}_max"]  = df.groupby("Municipality")[col].transform("max")
+    df[f"{col}_min"]  = df.groupby("Municipality")[col].transform("min")
 
-# MunicipalityごとのBreadthの統計量を追加
-df["MunicipalityBreadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean")
-df["MunicipalityBreadth_std"]  = df.groupby("Municipality")["Breadth"].transform("std")
-df["MunicipalityBreadth_max"]  = df.groupby("Municipality")["Breadth"].transform("max")
-df["MunicipalityBreadth_min"]  = df.groupby("Municipality")["Breadth"].transform("min")
-
-# MunicipalityごとのTotalFloorAreaの統計量を追加
-df["MunicipalityTotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
-df["MunicipalityTotalFloorArea_std"]  = df.groupby("Municipality")["TotalFloorArea"].transform("std")
-df["MunicipalityTotalFloorArea_max"]  = df.groupby("Municipality")["TotalFloorArea"].transform("max")
-df["MunicipalityTotalFloorArea_min"]  = df.groupby("Municipality")["TotalFloorArea"].transform("min")
-
-# MunicipalityごとのTotalFloorAreaのrank特徴量を追加
+# rank特徴量を追加
 df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
-
-# MunicipalityごとのFrontageの統計量を追加
-df["MunicipalityFrontage_mean"] = df.groupby("Municipality")["Frontage"].transform("mean")
-df["MunicipalityFrontage_std"]  = df.groupby("Municipality")["Frontage"].transform("std")
-df["MunicipalityFrontage_max"]  = df.groupby("Municipality")["Frontage"].transform("max")
-df["MunicipalityFrontage_min"]  = df.groupby("Municipality")["Frontage"].transform("min")
-
-# MunicipalityごとのMinTimeToNearestStationの統計量を追加
-df["MunicipalityMinTimeToNearestStation_mean"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("mean")
-df["MunicipalityMinTimeToNearestStation_std"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
-df["MunicipalityMinTimeToNearestStation_max"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
-df["MunicipalityMinTimeToNearestStation_min"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
-
-# MunicipalityごとのFloorAreaRatioのrank特徴量を追加
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
+df["MunicipalityFrontage_rank"] = df.groupby("Municipality")["Frontage"].rank()  # 追加
 
 # 特徴量生成
 cat_cols = [
