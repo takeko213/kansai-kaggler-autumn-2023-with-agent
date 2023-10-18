@@ -40,6 +40,12 @@ df["MunicipalityCoverageRatio_std"]  = df.groupby("Municipality")["CoverageRatio
 df["MunicipalityCoverageRatio_max"]  = df.groupby("Municipality")["CoverageRatio"].transform("max")
 df["MunicipalityCoverageRatio_min"]  = df.groupby("Municipality")["CoverageRatio"].transform("min")
 
+# MunicipalityごとのBreadthの統計量を追加
+df["MunicipalityBreadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean")
+df["MunicipalityBreadth_std"]  = df.groupby("Municipality")["Breadth"].transform("std")
+df["MunicipalityBreadth_max"]  = df.groupby("Municipality")["Breadth"].transform("max")
+df["MunicipalityBreadth_min"]  = df.groupby("Municipality")["Breadth"].transform("min")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
