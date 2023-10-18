@@ -31,6 +31,11 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
+# MunicipalityごとのFloorAreaRatioの統計量を追加
+df["FloorAreaRatio_Municipality_mean"] = df.groupby("Municipality")["FloorAreaRatio"].transform("mean")
+df["FloorAreaRatio_Municipality_median"] = df.groupby("Municipality")["FloorAreaRatio"].transform("median")
+df["FloorAreaRatio_Municipality_std"] = df.groupby("Municipality")["FloorAreaRatio"].transform("std")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
