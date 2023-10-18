@@ -37,24 +37,21 @@ df["Munic_Breadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean
 df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
 df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
 df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
-
-#TotalFloorAreaの特徴量追加
 df["Munic_TotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
 df["Munic_TotalFloorArea_max"] = df.groupby("Municipality")["TotalFloorArea"].transform("max")
 df["Munic_TotalFloorArea_min"] = df.groupby("Municipality")["TotalFloorArea"].transform("min")
 df["Munic_TotalFloorArea_std"] = df.groupby("Municipality")["TotalFloorArea"].transform("std")
-
-#Frontageの特徴量追加
 df["Munic_Frontage_mean"] = df.groupby("Municipality")["Frontage"].transform("mean")
 df["Munic_Frontage_max"] = df.groupby("Municipality")["Frontage"].transform("max")
 df["Munic_Frontage_min"] = df.groupby("Municipality")["Frontage"].transform("min")
 df["Munic_Frontage_std"] = df.groupby("Municipality")["Frontage"].transform("std")
-
-# MinTimeToNearestStationの特徴量追加
 df["Munic_MinTimeToNearestStation_mean"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("mean")
 df["Munic_MinTimeToNearestStation_max"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
 df["Munic_MinTimeToNearestStation_min"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
 df["Munic_MinTimeToNearestStation_std"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
+
+# MunicipalityごとのCoverageRatioのrank特徴量を追加
+df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
 # 特徴量生成
 cat_cols = [
@@ -109,7 +106,7 @@ for valid_pref in prefs:
                           lgb.early_stopping(stopping_rounds=100, verbose=True), 
                           lgb.log_evaluation(100)
                           ])
-    
+
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
