@@ -55,6 +55,9 @@ df['MaxTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestSt
 # MunicipalityごとのMinTimeToNearestStationのrank特徴量を追加
 df['MinTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
 
+# Year-BuildingYearの特徴量を追加
+df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
