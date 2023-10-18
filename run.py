@@ -53,6 +53,9 @@ df["NearestStation_TotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFl
 # NearestStationごとのFrontageのrank特徴量を追加
 df["NearestStation_Frontage_rank"] = df.groupby("NearestStation")["Frontage"].rank()
 
+# NearestStationごとのAreaのrank特徴量を追加
+df["NearestStation_Area_rank"] = df.groupby("NearestStation")["Area"].rank()
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
