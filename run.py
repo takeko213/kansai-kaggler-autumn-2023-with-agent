@@ -95,6 +95,14 @@ df['Frontage_Max_By_NearestStation'] = grouped.transform('max')
 df['Frontage_Min_By_NearestStation'] = grouped.transform('min')
 df['Frontage_Std_By_NearestStation'] = grouped.transform('std')
 
+# MunicipalityごとのFloorAreaRatioの統計量を追加
+grouped = df.groupby('Municipality')['FloorAreaRatio']
+df['FloorAreaRatio_Mean_By_Municipality'] = grouped.transform('mean')
+df['FloorAreaRatio_Median_By_Municipality'] = grouped.transform('median')
+df['FloorAreaRatio_Max_By_Municipality'] = grouped.transform('max')
+df['FloorAreaRatio_Min_By_Municipality'] = grouped.transform('min')
+df['FloorAreaRatio_Std_By_Municipality'] = grouped.transform('std')
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
