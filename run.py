@@ -40,6 +40,8 @@ for agg_func in ["mean", "max", "min", "std"]:
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Area_{agg_func}"] = df.groupby("NearestStation")["Area"].transform(agg_func)
 
+df['NearestStation-Structure_count'] = df.groupby(["NearestStation", "Structure"])["Structure"].transform("count")
+
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
 df["NearestStation_CoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
