@@ -66,6 +66,10 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 # NearestStationごとのAreaの統計量を追加
 for stat in ['mean', 'max', 'min', 'std']:
     df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
+
+# NearestStationごとのMinTimeToNearestStationの統計量を追加
+for stat in ['mean', 'max', 'min', 'std']:
+    df[f'NearestStation_MinTimeToNearestStation_{stat}'] = df.groupby('NearestStation')['MinTimeToNearestStation'].transform(stat)
     
 # モデル学習
 target = "TradePrice"
