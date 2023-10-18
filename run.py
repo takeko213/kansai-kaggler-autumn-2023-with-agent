@@ -76,6 +76,9 @@ df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRa
 # YearとBuildYearの差を新たな特徴量とする
 df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
 
+# TypeとRegionを文字列結合した特徴量を追加
+df['Type_Region'] = df['Type'] + '_' + df['Region']
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
