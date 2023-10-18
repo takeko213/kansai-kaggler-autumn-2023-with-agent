@@ -37,18 +37,17 @@ df["Munic_Breadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean
 df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
 df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
 df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
-
-#TotalFloorAreaの特徴量追加
 df["Munic_TotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
 df["Munic_TotalFloorArea_max"] = df.groupby("Municipality")["TotalFloorArea"].transform("max")
 df["Munic_TotalFloorArea_min"] = df.groupby("Municipality")["TotalFloorArea"].transform("min")
 df["Munic_TotalFloorArea_std"] = df.groupby("Municipality")["TotalFloorArea"].transform("std")
-
-#Frontageの特徴量追加
 df["Munic_Frontage_mean"] = df.groupby("Municipality")["Frontage"].transform("mean")
 df["Munic_Frontage_max"] = df.groupby("Municipality")["Frontage"].transform("max")
 df["Munic_Frontage_min"] = df.groupby("Municipality")["Frontage"].transform("min")
 df["Munic_Frontage_std"] = df.groupby("Municipality")["Frontage"].transform("std")
+
+#TimeToNearestStationの特徴量追加
+df["Munic_MaxTimeToNearestStation"] = df.groupby("Municipality")["TimeToNearestStation"].transform("max")
 
 # 特徴量生成
 cat_cols = [
