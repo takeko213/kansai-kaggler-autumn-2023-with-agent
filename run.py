@@ -27,8 +27,10 @@ city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 
 # trainとtestを結合しておく
 df = pd.concat([org_train, org_test], ignore_index=True)
+
 # stationの結合
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
+
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
@@ -49,10 +51,15 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
 # MunicipalityごとのFrontageのrank特徴量を追加
 df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
+
 # MunicipalityごとのAreaのrank特徴量を追加
 df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
+
 # NearestStationごとのFloorAreaRatioのrank特徴量を追加
 df['FloorAreaRatio_rank'] = df.groupby('NearestStation')['FloorAreaRatio'].rank()
+
+# NearestStationごとのFrontageのrank特徴量を追加
+df['Frontage_rank_by_NearestStation'] = df.groupby('NearestStation')['Frontage'].rank()
 
 # NearestStationごとのBreadthの統計量を追加
 grouped = df.groupby('NearestStation')['Breadth']
