@@ -63,10 +63,11 @@ df[cat_cols] = enc.transform(df[cat_cols])
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
-# NearestStationごとのAreaの統計量を追加
+# NearestStationごとの統計量を追加
 for stat in ['mean', 'max', 'min', 'std']:
     df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
-    
+    df[f'NearestStation_MaxTimeToNearestStation_{stat}'] = df.groupby('NearestStation')['MaxTimeToNearestStation'].transform(stat)
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
