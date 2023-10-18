@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import OrdinalEncoder
 import wandb
 from wandb.lightgbm import log_summary
@@ -77,6 +79,14 @@ df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 
 # CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
+
+# St_wiki_descriptionをtf-idfでベクトル化しDVDで15次元に圧縮して特徴量を作る
+tfidf_vectorizer = TfidfVectorizer()
+tfidf = tfidf_vectorizer.fit_transform(df["St_wiki_description"].fillna(""))
+svd = TruncatedSVD(n_components=15, random_state=cfg.seed)
+tfidf_svd = svd.fit_transform(tfidf)
+tfidf_svd_df = pd.DataFrame(tfidf_svd, columns=[f"St_wiki_description_svd{i}" for i in range(15)])
+df = pd.concat([df, tfidf_svd_df], axis=1)
 
 target = "TradePrice"
 not_use_cols = [
