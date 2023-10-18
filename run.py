@@ -60,6 +60,11 @@ df["Station_CoverageRatio_max"] = df.groupby("NearestStation")["CoverageRatio"].
 df["Station_CoverageRatio_min"] = df.groupby("NearestStation")["CoverageRatio"].transform("min")
 df["Station_CoverageRatio_std"] = df.groupby("NearestStation")["CoverageRatio"].transform("std")
 
+df["Station_Breadth_mean"] = df.groupby("NearestStation")["Breadth"].transform("mean")
+df["Station_Breadth_max"] = df.groupby("NearestStation")["Breadth"].transform("max")
+df["Station_Breadth_min"] = df.groupby("NearestStation")["Breadth"].transform("min")
+df["Station_Breadth_std"] = df.groupby("NearestStation")["Breadth"].transform("std")
+
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
@@ -103,7 +108,7 @@ params = {
     'objective': 'regression',
     'boosting': 'gbdt', 
     'metric': 'rmse', 
-    'learning_rate': 0.05, 
+    'learning_rate': 0.1, 
     'seed': cfg.seed
 }
 
