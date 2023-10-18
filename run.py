@@ -61,6 +61,9 @@ df['FloorAreaRatio_rank'] = df.groupby('NearestStation')['FloorAreaRatio'].rank(
 # NearestStationごとのFrontageのrank特徴量を追加
 df['Frontage_rank_by_NearestStation'] = df.groupby('NearestStation')['Frontage'].rank()
 
+# NearestStationごとのMinTimeToNearestStationのrank特徴量を追加
+df['MinTimeToNearestStation_rank'] = df.groupby('NearestStation')['MinTimeToNearestStation'].rank()
+
 # NearestStationごとのBreadthの統計量を追加
 grouped = df.groupby('NearestStation')['Breadth']
 df['Breadth_Mean_By_NearestStation'] = grouped.transform('mean')
