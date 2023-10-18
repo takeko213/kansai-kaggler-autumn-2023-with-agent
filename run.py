@@ -39,9 +39,8 @@ stat_cols = ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeT
 for stat in statistics:
     for col in stat_cols:
         df[f"Municipality{col}_{stat}"] = df.groupby("Municipality")[col].transform(stat)
-        if col != "Breadth":
-            df[f"NearestStation{col}_{stat}"] = df.groupby("NearestStation")[col].transform(stat)
-            
+        df[f"NearestStation{col}_{stat}"] = df.groupby("NearestStation")[col].transform(stat)
+
 # rank特徴量を追加
 df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
@@ -64,6 +63,10 @@ df[cat_cols] = enc.transform(df[cat_cols])
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
+# NearestStationごとのAreaの統計量を追加
+for stat in ['mean', 'max', 'min', 'std']:
+    df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
+    
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
