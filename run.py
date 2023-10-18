@@ -48,6 +48,7 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
 # 文字数を特徴量追加
 df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x : len(str(x).split(" ")))
+df['St_wiki_description_word_count'] = df['St_wiki_description'].apply(lambda x : len(str(x).split(" ")))    # added
 
 # モデル学習
 target = "TradePrice"
