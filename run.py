@@ -5,6 +5,7 @@ import wandb
 from wandb.lightgbm import log_summary
 import lightgbm as lgb
 from math import sqrt
+from sklearn.model_selection import KFold
 from config import Cfg
 from utils import rmse
 
@@ -104,16 +105,20 @@ params = {
     'objective': 'regression',
     'boosting': 'gbdt', 
     'metric': 'rmse', 
-    'learning_rate': 0.05, 
+    'learning_rate': 0.02,
+    'max_depth': -1,
+    'num_leaves': 127,
+    'colsample_bytree': 0.7,
     'seed': cfg.seed
 }
 
-prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
+kf = KFold(n_splits=5, shuffle=True, random_state=cfg.seed)
 
 scores = []
-for valid_pref in prefs:
-    tr_x, tr_y = train[train["Prefecture"]!=valid_pref][features], train[train["Prefecture"]!=valid_pref][target]
-    vl_x, vl_y = train[train["Prefecture"]==valid_pref][features], train[train["Prefecture"]==valid_pref][target]
+for tr_idxs, vl_idxs in kf.split(train):
+    tr_x, tr_y = train.iloc[tr_idxs][features], train.iloc[tr_idxs][target]
+    vl_x, vl_y = train.iloc[vl_idxs][features], train.iloc[vl_idxs][target]
+    
     tr_data = lgb.Dataset(tr_x, label=tr_y)
     vl_data = lgb.Dataset(vl_x, label=vl_y)
     model = lgb.train(params, tr_data, valid_sets=[tr_data, vl_data], num_boost_round=20000,
