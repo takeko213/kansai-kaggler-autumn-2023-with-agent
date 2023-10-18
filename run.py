@@ -29,6 +29,9 @@ city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 # Ci_wiki_descriptionの文字数を特徴量として追加
 city["Ci_wiki_description_length"] = city["Ci_wiki_description"].str.len()
 
+# St_wiki_descriptionの文字数を特徴量として追加
+station["St_wiki_description_length"] = station["St_wiki_description"].str.len()
+
 # trainとtestを結合しておく
 df = pd.concat([org_train, org_test], ignore_index=True)
 
