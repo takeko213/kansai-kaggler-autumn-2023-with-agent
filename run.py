@@ -46,6 +46,10 @@ for agg_func in ["mean", "max", "min", "std"]:
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Area_{agg_func}"] = df.groupby("NearestStation")["Area"].transform(agg_func)
 
+# NearestStationごとのMaxTimeToNearestStationの統計量を追加
+for agg_func in ["mean", "max", "min", "std"]:
+    df[f"Station_MaxTimeToNearestStation_{agg_func}"] = df.groupby("NearestStation")["MaxTimeToNearestStation"].transform(agg_func)
+
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
@@ -80,7 +84,6 @@ not_use_cols = [
     "MinTimeToNearestStation", target
 ]
 features = [c for c in df.columns if c not in not_use_cols]
-
 df[target] = np.log1p(df[target])
 train = df[df["Prefecture"]!="Osaka Prefecture"].reset_index(drop=True)
 test = df[df["Prefecture"]=="Osaka Prefecture"].reset_index(drop=True)
@@ -100,11 +103,7 @@ for valid_pref in prefs:
     vl_x, vl_y = train[train["Prefecture"]==valid_pref][features], train[train["Prefecture"]==valid_pref][target]
     tr_data = lgb.Dataset(tr_x, label=tr_y)
     vl_data = lgb.Dataset(vl_x, label=vl_y)
-    model = lgb.train(params, tr_data, valid_sets=[tr_data, vl_data], num_boost_round=20000,
-                      callbacks=[
-                          lgb.early_stopping(stopping_rounds=100, verbose=True), 
-                          lgb.log_evaluation(100)
-                          ])
+    model = lgb.train(params, tr_data, valid_sets=[tr_data, vl_data], num_boost_round=20000, callbacks=[lgb.early_stopping(stopping_rounds=100, verbose=True), lgb.log_evaluation(100)])
     
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
