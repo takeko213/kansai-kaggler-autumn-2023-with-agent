@@ -1,3 +1,6 @@
+以下の通り修正いたします。
+
+```python
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
@@ -76,6 +79,14 @@ df['Frontage_Max_By_NearestStation'] = grouped.transform('max')
 df['Frontage_Min_By_NearestStation'] = grouped.transform('min')
 df['Frontage_Std_By_NearestStation'] = grouped.transform('std')
 
+# NearestStationごとのAreaの統計量を追加
+grouped = df.groupby('NearestStation')['Area']
+df['Area_Mean_By_NearestStation'] = grouped.transform('mean')
+df['Area_Median_By_NearestStation'] = grouped.transform('median')
+df['Area_Max_By_NearestStation'] = grouped.transform('max')
+df['Area_Min_By_NearestStation'] = grouped.transform('min')
+df['Area_Std_By_NearestStation'] = grouped.transform('std')
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
@@ -118,3 +129,4 @@ print("cv", format(mean_score, ".5f"))
 wandb.config["cv"] = mean_score
 log_summary(model)
 wandb.finish()
+```
