@@ -50,10 +50,8 @@ df["NearestStation_BuildingYear_rank"] = df.groupby("NearestStation")["BuildingY
 
 df["NearestStation_TotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
 
-# NearestStationごとのFrontageのrank特徴量を追加
 df["NearestStation_Frontage_rank"] = df.groupby("NearestStation")["Frontage"].rank()
 
-# NearestStationごとのAreaのrank特徴量を追加
 df["NearestStation_Area_rank"] = df.groupby("NearestStation")["Area"].rank()
 
 cat_cols = [
@@ -73,6 +71,9 @@ df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x 
 df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
 df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
+
+# PrefectureのCountEncoding特徴量を追加
+df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 
 target = "TradePrice"
 not_use_cols = [
