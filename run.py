@@ -67,6 +67,9 @@ df["MunicipalityMinTimeToNearestStation_std"]  = df.groupby("Municipality")["Min
 df["MunicipalityMinTimeToNearestStation_max"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
 df["MunicipalityMinTimeToNearestStation_min"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
 
+# MunicipalityごとのMinTimeToNearestStationのrank特徴量を追加
+df["MunicipalityMinTimeToNearestStation_rank"] = df.groupby("Municipality")["MinTimeToNearestStation"].rank()
+
 # MunicipalityごとのFloorAreaRatioのrank特徴量を追加
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
