@@ -4,7 +4,6 @@ from sklearn.preprocessing import OrdinalEncoder
 import wandb
 from wandb.lightgbm import log_summary
 import lightgbm as lgb
-from math import sqrt
 from config import Cfg
 from utils import rmse
 
@@ -53,6 +52,8 @@ df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
 df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
 # NearestStationごとのFloorAreaRatioのrank特徴量を追加
 df['FloorAreaRatio_rank'] = df.groupby('NearestStation')['FloorAreaRatio'].rank()
+# NearestStationごとのTotalFloorAreaのrank特徴量を追加
+df['TotalFloorArea_rank'] = df.groupby('NearestStation')['TotalFloorArea'].rank()
 
 # NearestStationごとのBreadthの統計量を追加
 grouped = df.groupby('NearestStation')['Breadth']
