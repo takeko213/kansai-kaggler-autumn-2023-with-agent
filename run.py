@@ -78,6 +78,9 @@ df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 # CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
 
+# PurposeのCountEncoding特徴量を追加
+df["Purpose_count"] = df["Purpose"].map(df["Purpose"].value_counts())
+
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
