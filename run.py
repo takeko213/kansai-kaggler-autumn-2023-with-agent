@@ -51,6 +51,7 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
 # MunicipalityごとのAreaのrank特徴量を追加
 df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
+
 # NearestStationごとのFloorAreaRatioのrank特徴量を追加
 df['FloorAreaRatio_rank'] = df.groupby('NearestStation')['FloorAreaRatio'].rank()
 
@@ -61,6 +62,9 @@ df['Breadth_Median_By_NearestStation'] = grouped.transform('median')
 df['Breadth_Max_By_NearestStation'] = grouped.transform('max')
 df['Breadth_Min_By_NearestStation'] = grouped.transform('min')
 df['Breadth_Std_By_NearestStation'] = grouped.transform('std')
+
+# NearestStationごとのBreadthのrank特徴量を追加
+df['Breadth_rank'] = df.groupby('NearestStation')['Breadth'].rank()
 
 # NearestStationごとのBuildingYearの統計量を追加
 grouped = df.groupby('NearestStation')['BuildingYear']
