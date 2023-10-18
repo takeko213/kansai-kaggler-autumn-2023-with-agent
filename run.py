@@ -29,31 +29,8 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
 #新たな特徴量生成
-df["Munic_Conv_Cvg_Ratio"] = df.groupby("Municipality")["CoverageRatio"].transform(lambda x: x.sum() / len(x))
-df["Munic_Conv_Cvg_Ratio_max"] = df.groupby("Municipality")["CoverageRatio"].transform("max")
-df["Munic_Conv_Cvg_Ratio_min"] = df.groupby("Municipality")["CoverageRatio"].transform("min")
-df["Munic_Conv_Cvg_Ratio_std"] = df.groupby("Municipality")["CoverageRatio"].transform("std")
-df["Munic_Breadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean")
-df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
-df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
-df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
-df["Munic_TotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
-df["Munic_TotalFloorArea_max"] = df.groupby("Municipality")["TotalFloorArea"].transform("max")
-df["Munic_TotalFloorArea_min"] = df.groupby("Municipality")["TotalFloorArea"].transform("min")
-df["Munic_TotalFloorArea_std"] = df.groupby("Municipality")["TotalFloorArea"].transform("std")
-df["Munic_Frontage_mean"] = df.groupby("Municipality")["Frontage"].transform("mean")
-df["Munic_Frontage_max"] = df.groupby("Municipality")["Frontage"].transform("max")
-df["Munic_Frontage_min"] = df.groupby("Municipality")["Frontage"].transform("min")
-df["Munic_Frontage_std"] = df.groupby("Municipality")["Frontage"].transform("std")
-df["Munic_MinTimeToNearestStation_mean"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("mean")
-df["Munic_MinTimeToNearestStation_max"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
-df["Munic_MinTimeToNearestStation_min"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
-df["Munic_MinTimeToNearestStation_std"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
 
-# MunicipalityごとのCoverageRatioのrank特徴量を追加
-df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
-
-# 特徴量生成
+df["Municipality_Area_rank"] = df.groupby("Municipality")["Area"].rank()
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
@@ -68,12 +45,9 @@ df[cat_cols] = enc.transform(df[cat_cols])
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
-df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x : len(str(x).split(" ")))
+df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x: len(str(x).split(" ")))
 
-# MunicipalityごとのFloorAreaRatioのrank特徴量を追加
-df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
-
-# モデル学習
+#モデル学習
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
