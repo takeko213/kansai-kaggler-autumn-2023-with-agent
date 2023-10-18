@@ -34,6 +34,13 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
+# MunicipalityごとのFloorAreaRatioの統計量を追加
+df = df.merge(df.groupby("Municipality")["FloorAreaRatio"].agg(["mean", "std", "max", "min"]).rename(columns={'mean':'Municipality_FloorAreaRatio_mean',
+                                                                                                               'std': 'Municipality_FloorAreaRatio_std',
+                                                                                                               'max': 'Municipality_FloorAreaRatio_max',
+                                                                                                               'min': 'Municipality_FloorAreaRatio_min'}),
+              on="Municipality", how="left")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
@@ -53,7 +60,8 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
-    "TimeToNearestStation", "Station", "St_wiki_description", "Ci_wiki_description", target
+    "TimeToNearestStation", "Station", "St_wiki_description", "Ci_wiki_description",
+    target
 ]
 features = [c for c in df.columns if c not in not_use_cols]
 
