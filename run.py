@@ -59,6 +59,11 @@ df['MinTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestSt
 # 特徴量としてユークリッド距離を追加
 df['Station_to_City_Dist'] = ((df['St_Latitude'] - df['Ci_Latitude'])**2 + (df['St_Longitude'] - df['Ci_Longitude'])**2).apply(sqrt)
 
+# NearestStationごとのCoverageRatioの統計量を追加
+coverage_ratio_stats = df.groupby('NearestStation')['CoverageRatio'].agg(['mean', 'std', 'max', 'min'])
+coverage_ratio_stats.columns = ['CoverageRatio_mean', 'CoverageRatio_std', 'CoverageRatio_max', 'CoverageRatio_min']
+df = pd.merge(df, coverage_ratio_stats, on='NearestStation', how='left')
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
