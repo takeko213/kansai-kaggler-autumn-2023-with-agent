@@ -50,8 +50,10 @@ df["Munic_MinTimeToNearestStation_max"] = df.groupby("Municipality")["MinTimeToN
 df["Munic_MinTimeToNearestStation_min"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
 df["Munic_MinTimeToNearestStation_std"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
 
-# MunicipalityごとのCoverageRatioのrank特徴量を追加
+# MunicipalityごとのCoverageRatio、FloorAreaRatio、Frontageのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
+df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
+df["Municipality_Frontage_rank"] = df.groupby("Municipality")["Frontage"].rank()
 
 # 特徴量生成
 cat_cols = [
@@ -69,9 +71,6 @@ df[cat_cols] = enc.transform(df[cat_cols])
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
 df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x : len(str(x).split(" ")))
-
-# MunicipalityごとのFloorAreaRatioのrank特徴量を追加
-df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
 # モデル学習
 target = "TradePrice"
