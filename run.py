@@ -76,6 +76,14 @@ df['Frontage_Max_By_NearestStation'] = grouped.transform('max')
 df['Frontage_Min_By_NearestStation'] = grouped.transform('min')
 df['Frontage_Std_By_NearestStation'] = grouped.transform('std')
 
+# NearestStationごとのMaxTimeToNearestStationの統計量を追加
+grouped = df.groupby('NearestStation')['TimeToNearestStation']
+df['MaxTimeToNearestStation_Mean_By_NearestStation'] = grouped.transform('mean')
+df['MaxTimeToNearestStation_Median_By_NearestStation'] = grouped.transform('median')
+df['MaxTimeToNearestStation_Max_By_NearestStation'] = grouped.transform('max')
+df['MaxTimeToNearestStation_Min_By_NearestStation'] = grouped.transform('min')
+df['MaxTimeToNearestStation_Std_By_NearestStation'] = grouped.transform('std')
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
