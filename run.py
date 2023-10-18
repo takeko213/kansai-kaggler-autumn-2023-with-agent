@@ -40,6 +40,10 @@ for agg_func in ["mean", "max", "min", "std"]:
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Area_{agg_func}"] = df.groupby("NearestStation")["Area"].transform(agg_func)
 
+# DistinctNameごとのFloorAreaRatioの統計量を追加
+for agg_func in ["mean", "max", "min", "std"]:
+    df[f"DistinctName_FloorAreaRatio_{agg_func}"] = df.groupby("DistinctName")["FloorAreaRatio"].transform(agg_func)
+
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
 df["NearestStation_CoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
