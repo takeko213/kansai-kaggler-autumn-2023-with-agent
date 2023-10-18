@@ -70,6 +70,9 @@ df["MunicipalityMinTimeToNearestStation_min"]  = df.groupby("Municipality")["Min
 # MunicipalityごとのFloorAreaRatioのrank特徴量を追加
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
+# Year - BuildingYearの特徴量を追加
+df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
