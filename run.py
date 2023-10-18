@@ -73,6 +73,9 @@ df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x 
 # MunicipalityごとのFloorAreaRatioのrank特徴量を追加
 df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
+# YearとBuildYearの差を新たな特徴量とする
+df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
