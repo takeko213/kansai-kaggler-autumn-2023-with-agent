@@ -58,6 +58,9 @@ df["MunicipalityFrontage_std"]  = df.groupby("Municipality")["Frontage"].transfo
 df["MunicipalityFrontage_max"]  = df.groupby("Municipality")["Frontage"].transform("max")
 df["MunicipalityFrontage_min"]  = df.groupby("Municipality")["Frontage"].transform("min")
 
+# MunicipalityごとのMaxTimeToNearestStationの統計量を追加
+df["MunicipalityMaxTimeToNearestStation_mean"] = df.groupby("Municipality")["TimeToNearestStation"].transform("mean")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
