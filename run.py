@@ -46,8 +46,10 @@ df["NearestStation_CoverageRatio_rank"] = df.groupby("NearestStation")["Coverage
 
 df["NearestStation_Breadth_rank"] = df.groupby("NearestStation")["Breadth"].rank()
 
-# NearestStationごとのBuildingYearのrank特徴量を追加
 df["NearestStation_BuildingYear_rank"] = df.groupby("NearestStation")["BuildingYear"].rank()
+
+# NearestStationごとのTotalFloorAreaのrank特徴量を追加
+df["NearestStation_TotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
 
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
