@@ -10,14 +10,12 @@ from utils import rmse
 cfg = Cfg()
 wandb.init()
 
-# データ読み込み
 org_train = pd.read_csv(cfg.input_dir + "train.csv")
 org_test = pd.read_csv(cfg.input_dir + "test.csv")
 station = pd.read_csv(cfg.input_dir + "station.csv")
 city = pd.read_csv(cfg.input_dir + "city.csv")
 sub = pd.read_csv(cfg.input_dir + "sample_submission.csv")
 
-# 前処理
 station.columns = ["Station", "St_Latitude", "St_Longitude", "St_wiki_description"]
 city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci_wiki_description']
 
@@ -27,8 +25,6 @@ city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 df = pd.concat([org_train, org_test], ignore_index=True)
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
-
-#新たな特徴量生成
 
 for agg_column in ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeToNearestStation"]:
     for agg_func in ["mean", "max", "min", "std"]:
@@ -40,14 +36,16 @@ for agg_column in ["FloorAreaRatio", "CoverageRatio", "BuildingYear", "TotalFloo
 
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Frontage_{agg_func}"] = df.groupby("NearestStation")["Frontage"].transform(agg_func)
-    
+
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Area_{agg_func}"] = df.groupby("NearestStation")["Area"].transform(agg_func)
 
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
-# NearestStationごとのCoverageRatioのrank特徴量を追加
 df["NearestStation_CoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
+
+# NearestStationごとのBreadthのrank特徴量を追加
+df["NearestStation_Breadth_rank"] = df.groupby("NearestStation")["Breadth"].rank()
 
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
