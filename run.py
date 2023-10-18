@@ -26,10 +26,15 @@ city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 
 # trainとtestを結合しておく
 df = pd.concat([org_train, org_test], ignore_index=True)
+
 # stationの結合
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
+
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
+
+# Ci_wiki_descriptionの文字数を特徴量として追加
+df['Ci_wiki_description_len'] = df['Ci_wiki_description'].apply(lambda x: len(str(x)))
 
 # 特徴量生成
 cat_cols = [
@@ -86,6 +91,7 @@ for valid_pref in prefs:
     score = rmse(vl_y, vl_pred)
     scores.append(score)
 mean_score = np.mean(scores)
+
 print("cv", format(mean_score, ".5f"))
 wandb.config["cv"] = mean_score
 log_summary(model)
