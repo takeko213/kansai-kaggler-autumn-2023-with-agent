@@ -76,6 +76,12 @@ df["NearestStationFloorAreaRatio_std"]  = df.groupby("NearestStation")["FloorAre
 df["NearestStationFloorAreaRatio_max"]  = df.groupby("NearestStation")["FloorAreaRatio"].transform("max")
 df["NearestStationFloorAreaRatio_min"]  = df.groupby("NearestStation")["FloorAreaRatio"].transform("min")
 
+# NearestStationごとのBreadthの統計量を追加
+df["NearestStationBreadth_mean"] = df.groupby("NearestStation")["Breadth"].transform("mean")
+df["NearestStationBreadth_std"]  = df.groupby("NearestStation")["Breadth"].transform("std")
+df["NearestStationBreadth_max"]  = df.groupby("NearestStation")["Breadth"].transform("max")
+df["NearestStationBreadth_min"]  = df.groupby("NearestStation")["Breadth"].transform("min")
+
 # Year - BuildingYearの特徴量を追加
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
 
