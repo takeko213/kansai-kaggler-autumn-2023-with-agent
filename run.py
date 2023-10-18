@@ -23,6 +23,9 @@ station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 
 df = pd.concat([org_train, org_test], ignore_index=True)
+
+df['FloorPlan_count'] = df.groupby('NearestStation')["FloorPlan"].transform('count')
+
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
@@ -72,10 +75,8 @@ df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRa
 
 df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
 
-# PrefectureのCountEncoding特徴量を追加
 df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 
-# CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
 
 target = "TradePrice"
