@@ -68,6 +68,14 @@ df['BuildingYear_Max_By_NearestStation'] = grouped.transform('max')
 df['BuildingYear_Min_By_NearestStation'] = grouped.transform('min')
 df['BuildingYear_Std_By_NearestStation'] = grouped.transform('std')
 
+# NearestStationごとのFrontageの統計量を追加
+grouped = df.groupby('NearestStation')['Frontage']
+df['Frontage_Mean_By_NearestStation'] = grouped.transform('mean')
+df['Frontage_Median_By_NearestStation'] = grouped.transform('median')
+df['Frontage_Max_By_NearestStation'] = grouped.transform('max')
+df['Frontage_Min_By_NearestStation'] = grouped.transform('min')
+df['Frontage_Std_By_NearestStation'] = grouped.transform('std')
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
