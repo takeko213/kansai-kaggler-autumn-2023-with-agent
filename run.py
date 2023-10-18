@@ -34,6 +34,10 @@ for agg_column in ["FloorAreaRatio", "CoverageRatio", "BuildingYear", "TotalFloo
     for agg_func in ["mean", "max", "min", "std"]:
         df[f"Station_{agg_column}_{agg_func}"] = df.groupby("NearestStation")[agg_column].transform(agg_func)
 
+# distinct Breadth statistics
+for agg_func in ["mean", "max", "min", "std"]:
+    df[f"DistName_Breadth_{agg_func}"] = df.groupby("DistinctName")["Breadth"].transform(agg_func)
+
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Frontage_{agg_func}"] = df.groupby("NearestStation")["Frontage"].transform(agg_func)
 
@@ -72,10 +76,8 @@ df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRa
 
 df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
 
-# PrefectureのCountEncoding特徴量を追加
 df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 
-# CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
 
 target = "TradePrice"
