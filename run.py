@@ -59,6 +59,12 @@ df['MinTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestSt
 # 特徴量としてユークリッド距離を追加
 df['Station_to_City_Dist'] = ((df['St_Latitude'] - df['Ci_Latitude'])**2 + (df['St_Longitude'] - df['Ci_Longitude'])**2).apply(sqrt)
 
+# NearestStationごとのFloorAreaRatioの統計量を追加
+df['FloorAreaRatio_mean'] = df.groupby('NearestStation')['FloorAreaRatio'].transform('mean')
+df['FloorAreaRatio_max'] = df.groupby('NearestStation')['FloorAreaRatio'].transform('max')
+df['FloorAreaRatio_min'] = df.groupby('NearestStation')['FloorAreaRatio'].transform('min')
+df['FloorAreaRatio_std'] = df.groupby('NearestStation')['FloorAreaRatio'].transform('std')
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
