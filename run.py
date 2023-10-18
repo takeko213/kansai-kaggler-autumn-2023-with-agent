@@ -1,22 +1,18 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
-import wandb
-from wandb.lightgbm import log_summary
 import lightgbm as lgb
 from math import sqrt
 from config import Cfg
 from utils import rmse
 
 cfg = Cfg()
-wandb.init()
 
 # データ読み込み
 org_train = pd.read_csv(cfg.input_dir + "train.csv")
 org_test = pd.read_csv(cfg.input_dir + "test.csv")
 station = pd.read_csv(cfg.input_dir + "station.csv")
 city = pd.read_csv(cfg.input_dir + "city.csv")
-sub = pd.read_csv(cfg.input_dir + "sample_submission.csv")
 
 # 前処理
 station.columns = ["Station", "St_Latitude", "St_Longitude", "St_wiki_description"]
@@ -60,6 +56,9 @@ df['FloorAreaRatio_rank'] = df.groupby('NearestStation')['FloorAreaRatio'].rank(
 
 # NearestStationごとのFrontageのrank特徴量を追加
 df['Frontage_rank_by_NearestStation'] = df.groupby('NearestStation')['Frontage'].rank()
+
+# NearestStationごとのAreaのrank特徴量を追加
+df['Area_rank_by_NearestStation'] = df.groupby('NearestStation')['Area'].rank()
 
 # NearestStationごとのBreadthの統計量を追加
 grouped = df.groupby('NearestStation')['Breadth']
@@ -114,16 +113,10 @@ for valid_pref in prefs:
     tr_data = lgb.Dataset(tr_x, label=tr_y)
     vl_data = lgb.Dataset(vl_x, label=vl_y)
     model = lgb.train(params, tr_data, valid_sets=[tr_data, vl_data], num_boost_round=20000,
-                      callbacks=[
-                          lgb.early_stopping(stopping_rounds=100, verbose=True), 
-                          lgb.log_evaluation(100)
-                          ])
-    
+                      early_stopping_rounds=100,
+                      verbose_eval=100)
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
 mean_score = np.mean(scores)
 print("cv", format(mean_score, ".5f"))
-wandb.config["cv"] = mean_score
-log_summary(model)
-wandb.finish()
