@@ -46,14 +46,18 @@ df[cat_cols] = enc.transform(df[cat_cols])
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
-# MunicipalityごとのFrontageのrank特徴量を追加
+# MunicipalitごとのFrontageのrank特徴量を追加
 df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
-# MunicipalityごとのAreaのrank特徴量を追加
+# MunicipalitごとのAreaのrank特徴量を追加
 df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
-# MunicipalityごとのMaxTimeToNearestStationのrank特徴量を追加
+# MunicipalitごとのMaxTimeToNearestStationのrank特徴量を追加
 df['MaxTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
-# MunicipalityごとのMinTimeToNearestStationのrank特徴量を追加
+# MunicipalitごとのMinTimeToNearestStationのrank特徴量を追加
 df['MinTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
+
+# TypeとRegionを文字列結合した特徴量を追加
+df['Type_Region'] = df['Type'].astype(str) + '_' + df['Region'].astype(str)
+cat_cols.append('Type_Region')
 
 # モデル学習
 target = "TradePrice"
