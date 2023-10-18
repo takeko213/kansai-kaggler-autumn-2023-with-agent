@@ -46,6 +46,12 @@ df["MunicipalityBreadth_std"]  = df.groupby("Municipality")["Breadth"].transform
 df["MunicipalityBreadth_max"]  = df.groupby("Municipality")["Breadth"].transform("max")
 df["MunicipalityBreadth_min"]  = df.groupby("Municipality")["Breadth"].transform("min")
 
+# MunicipalityごとのBuildingYearの統計量を追加
+df["MunicipalityBuildingYear_mean"] = df.groupby("Municipality")["BuildingYear"].transform("mean")
+df["MunicipalityBuildingYear_std"]  = df.groupby("Municipality")["BuildingYear"].transform("std")
+df["MunicipalityBuildingYear_max"]  = df.groupby("Municipality")["BuildingYear"].transform("max")
+df["MunicipalityBuildingYear_min"]  = df.groupby("Municipality")["BuildingYear"].transform("min")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
