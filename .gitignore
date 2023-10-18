@@ -1,0 +1,10 @@
+.ipynb_checkpoints/
+__pycache__/
+.env
+.hypothesis
+input/
+output/
+.Dockerfile.swp
+wandb/
+.vscode/
+catboost_info
