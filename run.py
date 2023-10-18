@@ -60,6 +60,12 @@ df["Station_CoverageRatio_max"] = df.groupby("NearestStation")["CoverageRatio"].
 df["Station_CoverageRatio_min"] = df.groupby("NearestStation")["CoverageRatio"].transform("min")
 df["Station_CoverageRatio_std"] = df.groupby("NearestStation")["CoverageRatio"].transform("std")
 
+# NearestStationごとのBuildingYearの統計量を追加
+df["Station_BuildingYear_mean"] = df.groupby("NearestStation")["BuildingYear"].transform("mean")
+df["Station_BuildingYear_max"] = df.groupby("NearestStation")["BuildingYear"].transform("max")
+df["Station_BuildingYear_min"] = df.groupby("NearestStation")["BuildingYear"].transform("min")
+df["Station_BuildingYear_std"] = df.groupby("NearestStation")["BuildingYear"].transform("std")
+
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
