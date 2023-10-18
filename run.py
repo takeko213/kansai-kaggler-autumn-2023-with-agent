@@ -76,6 +76,14 @@ df['Frontage_Max_By_NearestStation'] = grouped.transform('max')
 df['Frontage_Min_By_NearestStation'] = grouped.transform('min')
 df['Frontage_Std_By_NearestStation'] = grouped.transform('std')
 
+# NearestStationごとのMinTimeToNearestStationの統計量を追加
+grouped = df.groupby('NearestStation')['MinTimeToNearestStation']
+df['MinTimeToNearestStation_Mean_By_NearestStation'] = grouped.transform('mean')
+df['MinTimeToNearestStation_Median_By_NearestStation'] = grouped.transform('median')
+df['MinTimeToNearestStation_Max_By_NearestStation'] = grouped.transform('max')
+df['MinTimeToNearestStation_Min_By_NearestStation'] = grouped.transform('min')
+df['MinTimeToNearestStation_Std_By_NearestStation'] = grouped.transform('std')
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
@@ -109,7 +117,7 @@ for valid_pref in prefs:
                           lgb.early_stopping(stopping_rounds=100, verbose=True), 
                           lgb.log_evaluation(100)
                           ])
-    
+
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
