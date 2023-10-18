@@ -50,11 +50,11 @@ df["NearestStation_BuildingYear_rank"] = df.groupby("NearestStation")["BuildingY
 
 df["NearestStation_TotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
 
-# NearestStationごとのFrontageのrank特徴量を追加
 df["NearestStation_Frontage_rank"] = df.groupby("NearestStation")["Frontage"].rank()
 
-# NearestStationごとのAreaのrank特徴量を追加
 df["NearestStation_Area_rank"] = df.groupby("NearestStation")["Area"].rank()
+
+df['Municipality_Count'] = df.groupby('Municipality')['Municipality'].transform('count')
 
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
