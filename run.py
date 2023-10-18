@@ -50,6 +50,12 @@ df["Munic_Frontage_max"] = df.groupby("Municipality")["Frontage"].transform("max
 df["Munic_Frontage_min"] = df.groupby("Municipality")["Frontage"].transform("min")
 df["Munic_Frontage_std"] = df.groupby("Municipality")["Frontage"].transform("std")
 
+# MinTimeToNearestStationの特徴量追加
+df["Munic_MinTimeToNearestStation_mean"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("mean")
+df["Munic_MinTimeToNearestStation_max"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
+df["Munic_MinTimeToNearestStation_min"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
+df["Munic_MinTimeToNearestStation_std"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
@@ -71,7 +77,8 @@ df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x 
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
-    "TimeToNearestStation", "Station", "St_wiki_description", "Ci_wiki_description", target
+    "TimeToNearestStation", "Station", "St_wiki_description", "Ci_wiki_description",
+    "MinTimeToNearestStation", target
 ]
 features = [c for c in df.columns if c not in not_use_cols]
 
