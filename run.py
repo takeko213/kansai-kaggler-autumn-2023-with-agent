@@ -84,6 +84,9 @@ enc = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
 enc.fit(org_train[cat_cols])
 df[cat_cols] = enc.transform(df[cat_cols])
 
+# TypeとRegionを文字列結合した特徴量を追加
+df["TypeRegion"] = df["Type"].astype(str) + "_" + df["Region"].astype(str)
+
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
