@@ -54,6 +54,9 @@ df["NearestStation_Frontage_rank"] = df.groupby("NearestStation")["Frontage"].ra
 
 df["NearestStation_Area_rank"] = df.groupby("NearestStation")["Area"].rank()
 
+# NearestStationごとUseのカウント特徴量を追加
+df['NearestStation_Use_count'] = df.groupby('NearestStation')['Use'].transform('count')
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
