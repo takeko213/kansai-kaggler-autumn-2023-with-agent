@@ -51,6 +51,8 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
 # MunicipalityごとのAreaのrank特徴量を追加
 df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
+# NearestStationごとのFloorAreaRatioのrank特徴量を追加
+df['FloorAreaRatio_rank'] = df.groupby('NearestStation')['FloorAreaRatio'].rank()
 
 # NearestStationごとのBreadthの統計量を追加
 grouped = df.groupby('NearestStation')['Breadth']
