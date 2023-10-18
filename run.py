@@ -4,7 +4,6 @@ from sklearn.preprocessing import OrdinalEncoder
 import wandb
 from wandb.lightgbm import log_summary
 import lightgbm as lgb
-from math import sqrt
 from config import Cfg
 from utils import rmse
 
@@ -67,6 +66,14 @@ df['BuildingYear_Median_By_NearestStation'] = grouped.transform('median')
 df['BuildingYear_Max_By_NearestStation'] = grouped.transform('max')
 df['BuildingYear_Min_By_NearestStation'] = grouped.transform('min')
 df['BuildingYear_Std_By_NearestStation'] = grouped.transform('std')
+
+# NearestStationごとのTotalFloorAreaの統計量を追加
+grouped = df.groupby('NearestStation')['TotalFloorArea']
+df['TotalFloorArea_Mean_By_NearestStation'] = grouped.transform('mean')
+df['TotalFloorArea_Median_By_NearestStation'] = grouped.transform('median')
+df['TotalFloorArea_Max_By_NearestStation'] = grouped.transform('max')
+df['TotalFloorArea_Min_By_NearestStation'] = grouped.transform('min')
+df['TotalFloorArea_Std_By_NearestStation'] = grouped.transform('std')
 
 # モデル学習
 target = "TradePrice"
