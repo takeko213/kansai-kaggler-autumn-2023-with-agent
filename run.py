@@ -38,6 +38,7 @@ for agg_column in ["FloorAreaRatio", "CoverageRatio", "BuildingYear", "TotalFloo
     for agg_func in ["mean", "max", "min", "std"]:
         df[f"Station_{agg_column}_{agg_func}"] = df.groupby("NearestStation")[agg_column].transform(agg_func)
 
+
 # NearestStationごとのFrontageの統計量を追加
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Frontage_{agg_func}"] = df.groupby("NearestStation")["Frontage"].transform(agg_func)
@@ -48,6 +49,9 @@ for agg_func in ["mean", "max", "min", "std"]:
 
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
+
+#NearestStationごとのFloorAreaRatioのrank特徴量を追加
+df["NearestStation_FloorAreaRatio_rank"] = df.groupby("NearestStation")["FloorAreaRatio"].rank()
 
 # 特徴量生成
 cat_cols = [
