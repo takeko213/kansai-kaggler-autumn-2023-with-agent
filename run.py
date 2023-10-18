@@ -38,41 +38,35 @@ for agg_column in ["FloorAreaRatio", "CoverageRatio", "BuildingYear", "TotalFloo
     for agg_func in ["mean", "max", "min", "std"]:
         df[f"Station_{agg_column}_{agg_func}"] = df.groupby("NearestStation")[agg_column].transform(agg_func)
 
-# NearestStationごとのFrontageの統計量を追加
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Frontage_{agg_func}"] = df.groupby("NearestStation")["Frontage"].transform(agg_func)
     
-# NearestStationごとのAreaの統計量を追加
 for agg_func in ["mean", "max", "min", "std"]:
     df[f"Station_Area_{agg_func}"] = df.groupby("NearestStation")["Area"].transform(agg_func)
 
-# MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
-# 特徴量生成
+# NearestStationごとのCoverageRatioのrank特徴量を追加
+df["NearestStation_CoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
     "Renovation", "Remarks"
 ]
 
-# カテゴリ変数の処理(ordinal encoding)
 enc = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
 enc.fit(org_train[cat_cols])
 df[cat_cols] = enc.transform(df[cat_cols])
 
-# True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
 df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x : len(str(x).split(" ")))
 
-# MunicipalityごとのFloorAreaRatioのrank特徴量を追加
 df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
-# YearとBuildYearの差を新たな特徴量とする
 df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
 
-# モデル学習
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
