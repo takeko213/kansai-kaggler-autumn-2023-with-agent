@@ -58,6 +58,12 @@ df["MunicipalityFrontage_std"]  = df.groupby("Municipality")["Frontage"].transfo
 df["MunicipalityFrontage_max"]  = df.groupby("Municipality")["Frontage"].transform("max")
 df["MunicipalityFrontage_min"]  = df.groupby("Municipality")["Frontage"].transform("min")
 
+# MunicipalityごとのAreaの統計量を追加
+df["MunicipalityArea_mean"] = df.groupby("Municipality")["Area"].transform("mean")
+df["MunicipalityArea_std"]  = df.groupby("Municipality")["Area"].transform("std")
+df["MunicipalityArea_max"]  = df.groupby("Municipality")["Area"].transform("max")
+df["MunicipalityArea_min"]  = df.groupby("Municipality")["Area"].transform("min")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
