@@ -50,6 +50,8 @@ df["Munic_MinTimeToNearestStation_max"] = df.groupby("Municipality")["MinTimeToN
 df["Munic_MinTimeToNearestStation_min"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
 df["Munic_MinTimeToNearestStation_std"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
 
+df["EuclidianDist_St_Ci"] = np.sqrt((df["St_Longitude"] - df["Ci_Longitude"])**2 + (df["St_Latitude"] - df["Ci_Latitude"])**2)
+
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
 
