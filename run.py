@@ -52,6 +52,8 @@ df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
 df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
 # MunicipalityごとのMaxTimeToNearestStationのrank特徴量を追加
 df['MaxTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
+# MunicipalityごとのMinTimeToNearestStationのrank特徴量を追加
+df['MinTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
 
 # モデル学習
 target = "TradePrice"
