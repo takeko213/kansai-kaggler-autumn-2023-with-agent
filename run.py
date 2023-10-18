@@ -24,11 +24,8 @@ city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 
-# trainとtestを結合しておく
 df = pd.concat([org_train, org_test], ignore_index=True)
-# stationの結合
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
-# cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
 #新たな特徴量生成
@@ -36,12 +33,16 @@ df["Munic_Conv_Cvg_Ratio"] = df.groupby("Municipality")["CoverageRatio"].transfo
 df["Munic_Conv_Cvg_Ratio_max"] = df.groupby("Municipality")["CoverageRatio"].transform("max")
 df["Munic_Conv_Cvg_Ratio_min"] = df.groupby("Municipality")["CoverageRatio"].transform("min")
 df["Munic_Conv_Cvg_Ratio_std"] = df.groupby("Municipality")["CoverageRatio"].transform("std")
-
-# Breadth関連特徴量を追加
 df["Munic_Breadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean")
 df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
 df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
 df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
+
+#TotalFloorAreaの特徴量追加
+df["Munic_TotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
+df["Munic_TotalFloorArea_max"] = df.groupby("Municipality")["TotalFloorArea"].transform("max")
+df["Munic_TotalFloorArea_min"] = df.groupby("Municipality")["TotalFloorArea"].transform("min")
+df["Munic_TotalFloorArea_std"] = df.groupby("Municipality")["TotalFloorArea"].transform("std")
 
 # 特徴量生成
 cat_cols = [
@@ -58,7 +59,6 @@ df[cat_cols] = enc.transform(df[cat_cols])
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
-# 文字数を特徴量追加
 df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x : len(str(x).split(" ")))
 
 # モデル学習
@@ -81,9 +81,7 @@ params = {
     'seed': cfg.seed
 }
 
-# trainの各都道府県をvalidにしてcross validation
 prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
-
 scores = []
 for valid_pref in prefs:
     tr_x, tr_y = train[train["Prefecture"]!=valid_pref][features], train[train["Prefecture"]!=valid_pref][target]
@@ -96,10 +94,10 @@ for valid_pref in prefs:
                           lgb.log_evaluation(100)
                           ])
     
-    # valid_pred
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
+
 mean_score = np.mean(scores)
 print("cv", format(mean_score, ".5f"))
 wandb.config["cv"] = mean_score
