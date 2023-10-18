@@ -51,13 +51,14 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
 # MunicipalityごとのAreaのrank特徴量を追加
 df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
-# MunicipalityごとのMaxTimeToNearestStationのrank特徴量を追加
-df['MaxTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
-# MunicipalityごとのMinTimeToNearestStationのrank特徴量を追加
-df['MinTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
 
-# 特徴量としてユークリッド距離を追加
-df['Station_to_City_Dist'] = ((df['St_Latitude'] - df['Ci_Latitude'])**2 + (df['St_Longitude'] - df['Ci_Longitude'])**2).apply(sqrt)
+# NearestStationごとのBreadthの統計量を追加
+grouped = df.groupby('NearestStation')['Breadth']
+df['Breadth_Mean_By_NearestStation'] = grouped.transform('mean')
+df['Breadth_Median_By_NearestStation'] = grouped.transform('median')
+df['Breadth_Max_By_NearestStation'] = grouped.transform('max')
+df['Breadth_Min_By_NearestStation'] = grouped.transform('min')
+df['Breadth_Std_By_NearestStation'] = grouped.transform('std')
 
 # モデル学習
 target = "TradePrice"
@@ -79,7 +80,6 @@ params = {
     'seed': cfg.seed
 }
 
-# trainの各都道府県をvalidにしてcross validation
 prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
 
 scores = []
@@ -94,7 +94,6 @@ for valid_pref in prefs:
                           lgb.log_evaluation(100)
                           ])
     
-    # valid_pred
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
