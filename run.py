@@ -85,6 +85,9 @@ df['Frontage_Max_By_NearestStation'] = grouped.transform('max')
 df['Frontage_Min_By_NearestStation'] = grouped.transform('min')
 df['Frontage_Std_By_NearestStation'] = grouped.transform('std')
 
+# NearestStationごとのMaxTimeToNearestStationのrank特徴量を追加
+df['MaxTimeToNearestStation_rank'] = df.groupby('NearestStation')['TimeToNearestStation'].rank()
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
