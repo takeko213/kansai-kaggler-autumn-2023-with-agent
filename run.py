@@ -46,6 +46,9 @@ df["MunicipalityBreadth_std"]  = df.groupby("Municipality")["Breadth"].transform
 df["MunicipalityBreadth_max"]  = df.groupby("Municipality")["Breadth"].transform("max")
 df["MunicipalityBreadth_min"]  = df.groupby("Municipality")["Breadth"].transform("min")
 
+# MunicipalityごとのBreadthのrank特徴量を追加
+df["MunicipalityBreadth_rank"] = df.groupby("Municipality")["Breadth"].rank()
+
 # MunicipalityごとのTotalFloorAreaの統計量を追加
 df["MunicipalityTotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
 df["MunicipalityTotalFloorArea_std"]  = df.groupby("Municipality")["TotalFloorArea"].transform("std")
@@ -95,9 +98,9 @@ test = df[df["Prefecture"]=="Osaka Prefecture"].reset_index(drop=True)
 
 params = {
     'objective': 'regression',
-    'boosting': 'gbdt', 
-    'metric': 'rmse', 
-    'learning_rate': 0.05, 
+    'boosting': 'gbdt',
+    'metric': 'rmse',
+    'learning_rate': 0.05,
     'seed': cfg.seed
 }
 
@@ -112,7 +115,7 @@ for valid_pref in prefs:
     vl_data = lgb.Dataset(vl_x, label=vl_y)
     model = lgb.train(params, tr_data, valid_sets=[tr_data, vl_data], num_boost_round=20000,
                       callbacks=[
-                          lgb.early_stopping(stopping_rounds=100, verbose=True), 
+                          lgb.early_stopping(stopping_rounds=100, verbose=True),
                           lgb.log_evaluation(100)
                           ])
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
