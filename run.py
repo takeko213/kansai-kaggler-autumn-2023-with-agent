@@ -70,6 +70,12 @@ df["MunicipalityMinTimeToNearestStation_min"]  = df.groupby("Municipality")["Min
 # MunicipalityごとのFloorAreaRatioのrank特徴量を追加
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
+# NearestStationごとのBuildingYearの統計量を追加
+df["NearestStationBuildingYear_mean"] = df.groupby("NearestStation")["BuildingYear"].transform("mean")
+df["NearestStationBuildingYear_std"]  = df.groupby("NearestStation")["BuildingYear"].transform("std")
+df["NearestStationBuildingYear_max"]  = df.groupby("NearestStation")["BuildingYear"].transform("max")
+df["NearestStationBuildingYear_min"]  = df.groupby("NearestStation")["BuildingYear"].transform("min")
+
 # NearestStationごとのFloorAreaRatioの統計量を追加
 df["NearestStationFloorAreaRatio_mean"] = df.groupby("NearestStation")["FloorAreaRatio"].transform("mean")
 df["NearestStationFloorAreaRatio_std"]  = df.groupby("NearestStation")["FloorAreaRatio"].transform("std")
