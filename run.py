@@ -73,12 +73,15 @@ df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x 
 # MunicipalityごとのFloorAreaRatioのrank特徴量を追加
 df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 
+# MunicipalityごとのMaxTimeToNearestStationのrank特徴量を追加
+df["Municipality_MaxTimeToNearestStation_rank"] = df.groupby("Municipality")["MaxTimeToNearestStation"].rank()
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
     "TimeToNearestStation", "Station", "St_wiki_description", "Ci_wiki_description",
-    "MinTimeToNearestStation", target
+    "MinTimeToNearestStation", "MaxTimeToNearestStation", target
 ]
 features = [c for c in df.columns if c not in not_use_cols]
 
