@@ -42,6 +42,11 @@ df["Munic_Breadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean
 df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
 df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
 df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
+# BuildingYear関連特徴量を追加
+df["Munic_BuildingYear_mean"] = df.groupby("Municipality")["BuildingYear"].transform("mean")
+df["Munic_BuildingYear_max"] = df.groupby("Municipality")["BuildingYear"].transform("max")
+df["Munic_BuildingYear_min"] = df.groupby("Municipality")["BuildingYear"].transform("min")
+df["Munic_BuildingYear_std"] = df.groupby("Municipality")["BuildingYear"].transform("std")
 
 # 特徴量生成
 cat_cols = [
