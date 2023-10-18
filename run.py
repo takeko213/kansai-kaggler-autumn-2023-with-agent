@@ -29,48 +29,18 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
 #新たな特徴量生成
-df["Munic_Conv_Cvg_Ratio"] = df.groupby("Municipality")["CoverageRatio"].transform(lambda x: x.sum() / len(x))
-df["Munic_Conv_Cvg_Ratio_max"] = df.groupby("Municipality")["CoverageRatio"].transform("max")
-df["Munic_Conv_Cvg_Ratio_min"] = df.groupby("Municipality")["CoverageRatio"].transform("min")
-df["Munic_Conv_Cvg_Ratio_std"] = df.groupby("Municipality")["CoverageRatio"].transform("std")
-df["Munic_Breadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean")
-df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
-df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
-df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
-df["Munic_TotalFloorArea_mean"] = df.groupby("Municipality")["TotalFloorArea"].transform("mean")
-df["Munic_TotalFloorArea_max"] = df.groupby("Municipality")["TotalFloorArea"].transform("max")
-df["Munic_TotalFloorArea_min"] = df.groupby("Municipality")["TotalFloorArea"].transform("min")
-df["Munic_TotalFloorArea_std"] = df.groupby("Municipality")["TotalFloorArea"].transform("std")
-df["Munic_Frontage_mean"] = df.groupby("Municipality")["Frontage"].transform("mean")
-df["Munic_Frontage_max"] = df.groupby("Municipality")["Frontage"].transform("max")
-df["Munic_Frontage_min"] = df.groupby("Municipality")["Frontage"].transform("min")
-df["Munic_Frontage_std"] = df.groupby("Municipality")["Frontage"].transform("std")
-df["Munic_MinTimeToNearestStation_mean"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("mean")
-df["Munic_MinTimeToNearestStation_max"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
-df["Munic_MinTimeToNearestStation_min"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
-df["Munic_MinTimeToNearestStation_std"] = df.groupby("Municipality")["MinTimeToNearestStation"].transform("std")
 
-df["Station_FloorAreaRatio_mean"] = df.groupby("NearestStation")["FloorAreaRatio"].transform("mean")
-df["Station_FloorAreaRatio_max"] = df.groupby("NearestStation")["FloorAreaRatio"].transform("max")
-df["Station_FloorAreaRatio_min"] = df.groupby("NearestStation")["FloorAreaRatio"].transform("min")
-df["Station_FloorAreaRatio_std"] = df.groupby("NearestStation")["FloorAreaRatio"].transform("std")
+for agg_column in ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeToNearestStation"]:
+    for agg_func in ["mean", "max", "min", "std"]:
+        df[f"Munic_{agg_column}_{agg_func}"] = df.groupby("Municipality")[agg_column].transform(agg_func)
 
-df["Station_CoverageRatio_mean"] = df.groupby("NearestStation")["CoverageRatio"].transform("mean")
-df["Station_CoverageRatio_max"] = df.groupby("NearestStation")["CoverageRatio"].transform("max")
-df["Station_CoverageRatio_min"] = df.groupby("NearestStation")["CoverageRatio"].transform("min")
-df["Station_CoverageRatio_std"] = df.groupby("NearestStation")["CoverageRatio"].transform("std")
+for agg_column in ["FloorAreaRatio", "CoverageRatio", "BuildingYear", "TotalFloorArea"]:
+    for agg_func in ["mean", "max", "min", "std"]:
+        df[f"Station_{agg_column}_{agg_func}"] = df.groupby("NearestStation")[agg_column].transform(agg_func)
 
-# NearestStationごとのBuildingYearの統計量を追加
-df["Station_BuildingYear_mean"] = df.groupby("NearestStation")["BuildingYear"].transform("mean")
-df["Station_BuildingYear_max"] = df.groupby("NearestStation")["BuildingYear"].transform("max")
-df["Station_BuildingYear_min"] = df.groupby("NearestStation")["BuildingYear"].transform("min")
-df["Station_BuildingYear_std"] = df.groupby("NearestStation")["BuildingYear"].transform("std")
-
-# NearestStationごとのTotalFloorAreaの統計量を追加
-df["Station_TotalFloorArea_mean"] = df.groupby("NearestStation")["TotalFloorArea"].transform("mean")
-df["Station_TotalFloorArea_max"] = df.groupby("NearestStation")["TotalFloorArea"].transform("max")
-df["Station_TotalFloorArea_min"] = df.groupby("NearestStation")["TotalFloorArea"].transform("min")
-df["Station_TotalFloorArea_std"] = df.groupby("NearestStation")["TotalFloorArea"].transform("std")
+# NearestStationごとのFrontageの統計量を追加
+for agg_func in ["mean", "max", "min", "std"]:
+    df[f"Station_Frontage_{agg_func}"] = df.groupby("NearestStation")["Frontage"].transform(agg_func)
 
 # MunicipalityごとのCoverageRatioのrank特徴量を追加
 df["Municipality_CoverageRatio_rank"] = df.groupby("Municipality")["CoverageRatio"].rank()
