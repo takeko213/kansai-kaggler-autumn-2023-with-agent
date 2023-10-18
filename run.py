@@ -64,13 +64,15 @@ df["MunicipalityMinTimeToNearestStation_std"]  = df.groupby("Municipality")["Min
 df["MunicipalityMinTimeToNearestStation_max"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("max")
 df["MunicipalityMinTimeToNearestStation_min"]  = df.groupby("Municipality")["MinTimeToNearestStation"].transform("min")
 
+# MunicipalityごとのFloorAreaRatioのrank特徴量を追加
+df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
     "Renovation", "Remarks"
 ]
-
 # カテゴリ変数の処理(ordinal encoding)
 enc = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
 enc.fit(org_train[cat_cols])
@@ -113,8 +115,6 @@ for valid_pref in prefs:
                           lgb.early_stopping(stopping_rounds=100, verbose=True), 
                           lgb.log_evaluation(100)
                           ])
-    
-    # valid_pred
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
