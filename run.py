@@ -4,6 +4,7 @@ from sklearn.preprocessing import OrdinalEncoder
 import wandb
 from wandb.lightgbm import log_summary
 import lightgbm as lgb
+from math import sqrt
 from config import Cfg
 from utils import rmse
 
@@ -54,6 +55,9 @@ df['Area_rank'] = df.groupby('Municipality')['Area'].rank()
 df['MaxTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
 # MunicipalityごとのMinTimeToNearestStationのrank特徴量を追加
 df['MinTimeToNearestStation_rank'] = df.groupby('Municipality')['TimeToNearestStation'].rank()
+
+# 特徴量としてユークリッド距離を追加
+df['Station_to_City_Dist'] = ((df['St_Latitude'] - df['Ci_Latitude'])**2 + (df['St_Longitude'] - df['Ci_Longitude'])**2).apply(sqrt)
 
 # モデル学習
 target = "TradePrice"
