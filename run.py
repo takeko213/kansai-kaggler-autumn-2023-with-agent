@@ -37,6 +37,12 @@ df["Munic_Conv_Cvg_Ratio_max"] = df.groupby("Municipality")["CoverageRatio"].tra
 df["Munic_Conv_Cvg_Ratio_min"] = df.groupby("Municipality")["CoverageRatio"].transform("min")
 df["Munic_Conv_Cvg_Ratio_std"] = df.groupby("Municipality")["CoverageRatio"].transform("std")
 
+# Breadth関連特徴量を追加
+df["Munic_Breadth_mean"] = df.groupby("Municipality")["Breadth"].transform("mean")
+df["Munic_Breadth_max"] = df.groupby("Municipality")["Breadth"].transform("max")
+df["Munic_Breadth_min"] = df.groupby("Municipality")["Breadth"].transform("min")
+df["Munic_Breadth_std"] = df.groupby("Municipality")["Breadth"].transform("std")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
