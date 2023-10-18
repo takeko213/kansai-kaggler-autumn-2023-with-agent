@@ -46,6 +46,9 @@ df[cat_cols] = enc.transform(df[cat_cols])
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
+# 文字数を特徴量追加
+df['Ci_wiki_description_word_count'] = df['Ci_wiki_description'].apply(lambda x : len(str(x).split(" ")))
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
