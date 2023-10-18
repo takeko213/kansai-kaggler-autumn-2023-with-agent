@@ -34,6 +34,12 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 # cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
+# MunicipalityごとのCoverageRatioの統計量を追加
+df["MunicipalityCoverageRatio_mean"] = df.groupby("Municipality")["CoverageRatio"].transform("mean")
+df["MunicipalityCoverageRatio_std"]  = df.groupby("Municipality")["CoverageRatio"].transform("std")
+df["MunicipalityCoverageRatio_max"]  = df.groupby("Municipality")["CoverageRatio"].transform("max")
+df["MunicipalityCoverageRatio_min"]  = df.groupby("Municipality")["CoverageRatio"].transform("min")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
