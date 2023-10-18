@@ -1,3 +1,4 @@
+```python
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
@@ -78,6 +79,9 @@ df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 # CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
 
+# NearestStationのCountEncoding特徴量を追加
+df["NearestStation_count"] = df["NearestStation"].map(df["NearestStation"].value_counts())
+
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
@@ -109,7 +113,7 @@ for valid_pref in prefs:
                       callbacks=[
                           lgb.early_stopping(stopping_rounds=100, verbose=True), 
                           lgb.log_evaluation(100)
-                          ])
+                      ])
     
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
@@ -120,3 +124,4 @@ print("cv", format(mean_score, ".5f"))
 wandb.config["cv"] = mean_score
 log_summary(model)
 wandb.finish()
+```
