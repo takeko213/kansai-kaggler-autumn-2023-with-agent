@@ -46,6 +46,9 @@ df[cat_cols] = enc.transform(df[cat_cols])
 # True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
+# MunicipalityごとのFrontageのrank特徴量を追加
+df['Frontage_rank'] = df.groupby('Municipality')['Frontage'].rank()
+
 # モデル学習
 target = "TradePrice"
 not_use_cols = [
