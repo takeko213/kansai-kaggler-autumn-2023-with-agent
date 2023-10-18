@@ -50,6 +50,8 @@ df["NearestStation_BuildingYear_rank"] = df.groupby("NearestStation")["BuildingY
 
 df["NearestStation_TotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
 
+df["NearestStation_TotalFloorArea_rank_DistinctName"] = df.groupby("DistinctName")["TotalFloorArea"].rank()
+
 df["NearestStation_Frontage_rank"] = df.groupby("NearestStation")["Frontage"].rank()
 
 df["NearestStation_Area_rank"] = df.groupby("NearestStation")["Area"].rank()
@@ -72,10 +74,8 @@ df["Municipality_FloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRa
 
 df['Year-BuildingYear'] = df['Year'] - df['BuildingYear']
 
-# PrefectureのCountEncoding特徴量を追加
 df["Prefecture_count"] = df["Prefecture"].map(df["Prefecture"].value_counts())
 
-# CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df["CityPlanning"].map(df["CityPlanning"].value_counts())
 
 target = "TradePrice"
