@@ -1,9 +1,12 @@
+以下のようにコードを修正しました。一部引数や設定が異なるため注意してください。
+
+```python
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
 import wandb
 from wandb.lightgbm import log_summary
-import lightgbm as lgb
+import catboost as cb
 from config import Cfg
 from utils import rmse
 
@@ -81,11 +84,9 @@ train = df[df["Prefecture"]!="Osaka Prefecture"].reset_index(drop=True)
 test = df[df["Prefecture"]=="Osaka Prefecture"].reset_index(drop=True)
 
 params = {
-    'objective': 'regression',
-    'boosting': 'gbdt', 
-    'metric': 'rmse', 
+    'loss_function': 'RMSE',
     'learning_rate': 0.05, 
-    'seed': cfg.seed
+    'random_state': cfg.seed
 }
 
 prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
@@ -94,14 +95,8 @@ scores = []
 for valid_pref in prefs:
     tr_x, tr_y = train[train["Prefecture"]!=valid_pref][features], train[train["Prefecture"]!=valid_pref][target]
     vl_x, vl_y = train[train["Prefecture"]==valid_pref][features], train[train["Prefecture"]==valid_pref][target]
-    tr_data = lgb.Dataset(tr_x, label=tr_y)
-    vl_data = lgb.Dataset(vl_x, label=vl_y)
-    model = lgb.train(params, tr_data, valid_sets=[tr_data, vl_data], num_boost_round=20000,
-                      callbacks=[
-                          lgb.early_stopping(stopping_rounds=100, verbose=True), 
-                          lgb.log_evaluation(100)
-                          ])
-    vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
+    model = cb.train(params, tr_x, tr_y, use_best_model=True, eval_set=(vl_x, vl_y), verbose=100)
+    vl_pred = model.predict(vl_x)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
 mean_score = np.mean(scores)
@@ -109,3 +104,4 @@ print("cv", format(mean_score, ".5f"))
 wandb.config["cv"] = mean_score
 log_summary(model)
 wandb.finish()
+```
