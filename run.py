@@ -50,6 +50,8 @@ df["NearestStationCoverageRatio_rank"] = df.groupby("NearestStation")["CoverageR
 
 # NearestStationごとのTotalFloorAreaのrank特徴量を追加
 df["NearestStationTotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
+# NearestStationごとのAreaのrank特徴量を追加
+df["NearestStationArea_rank"] = df.groupby("NearestStation")["Area"].rank()
 
 # Year - BuildingYearの特徴量を追加
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
