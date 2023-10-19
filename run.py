@@ -1,3 +1,6 @@
+以下のコードは元のコードにNearestStationごとのBreadthのrank特徴量を追加するという修正を加えたものです。
+
+```python
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
@@ -44,9 +47,13 @@ for stat in statistics:
 # rank特徴量を追加
 df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
+
 # NearestStationごとのFloorAreaRatioとCoverageRatioのrank特徴量を追加
 df["NearestStationFloorAreaRatio_rank"] = df.groupby("NearestStation")["FloorAreaRatio"].rank()
 df["NearestStationCoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
+
+# NearestStationごとのBreadthのrank特徴量を追加
+df["NearestStationBreadth_rank"] = df.groupby("NearestStation")["Breadth"].rank()
 
 # Year - BuildingYearの特徴量を追加
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
@@ -112,3 +119,4 @@ print("cv", format(mean_score, ".5f"))
 wandb.config["cv"] = mean_score
 log_summary(model)
 wandb.finish()
+```
