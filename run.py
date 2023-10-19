@@ -19,7 +19,6 @@ sub = pd.read_csv(cfg.input_dir + "sample_submission.csv")
 station.columns = ["Station", "St_Latitude", "St_Longitude", "St_wiki_description"]
 city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci_wiki_description']
 
-
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
@@ -70,7 +69,8 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 for stat in ['mean', 'max', 'min', 'std']:
     df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
     df[f'DistrictName_Area_{stat}'] = df.groupby('DistrictName')['Area'].transform(stat)
-    df[f'DistrictName_BuildingYear_{stat}'] = df.groupby('DistrictName')['BuildingYear'].transform(stat) # Feature addition
+    df[f'DistrictName_BuildingYear_{stat}'] = df.groupby('DistrictName')['BuildingYear'].transform(stat)
+    df[f'DistrictName_CoverageRatio_{stat}'] = df.groupby('DistrictName')['CoverageRatio'].transform(stat) # Feature addition
 
 target = "TradePrice"
 not_use_cols = [
