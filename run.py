@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import OrdinalEncoder
 import wandb
 from wandb.lightgbm import log_summary
@@ -29,6 +31,13 @@ station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
 df = pd.concat([org_train, org_test], ignore_index=True)
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
+
+# Ci_wiki_descriptionをtf-idfでベクトル化しsvdで15次元に圧縮
+vec_tfidf = TfidfVectorizer()
+tfidf_mtx = vec_tfidf.fit_transform(df["Ci_wiki_description"].fillna("").values)
+svd = TruncatedSVD(n_components=15)
+df_svd = pd.DataFrame(svd.fit_transform(tfidf_mtx), columns=[f"svd_{i}" for i in range(15)])
+df = pd.concat([df, df_svd], axis=1)
 
 statistics = ['mean', 'std', 'max', 'min']
 stat_cols = ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeToNearestStation", "BuildingYear", "FloorAreaRatio"]
