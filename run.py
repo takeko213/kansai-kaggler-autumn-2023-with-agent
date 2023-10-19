@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import OrdinalEncoder
 import wandb
 from wandb.lightgbm import log_summary
@@ -23,6 +25,14 @@ city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci
 
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
+
+# TF-IDFとSVD圧縮を使用してテキストデータを特徴量化
+tfidf = TfidfVectorizer()
+svd = TruncatedSVD(n_components=15)
+
+txt_features = svd.fit_transform(tfidf.fit_transform(station["St_wiki_description"].fillna("")))
+for i in range(txt_features.shape[1]):
+    station[f"wiki_txt_{i}"] = txt_features[:, i]
 
 station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
 
