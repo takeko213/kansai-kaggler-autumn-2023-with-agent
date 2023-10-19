@@ -65,6 +65,9 @@ df["Prefecture_count"] = df.groupby("Prefecture")["Prefecture"].transform("count
 # CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df.groupby("CityPlanning")["CityPlanning"].transform("count")
 
+# Code Improvement: Add count encoding for Classification
+df["Classification_count"] = df.groupby("Classification")["Classification"].transform("count")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
