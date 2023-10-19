@@ -10,7 +10,6 @@ from utils import rmse
 cfg = Cfg()
 wandb.init()
 
-
 org_train = pd.read_csv(cfg.input_dir + "train.csv")
 org_test = pd.read_csv(cfg.input_dir + "test.csv")
 station = pd.read_csv(cfg.input_dir + "station.csv")
@@ -19,6 +18,7 @@ sub = pd.read_csv(cfg.input_dir + "sample_submission.csv")
 
 station.columns = ["Station", "St_Latitude", "St_Longitude", "St_wiki_description"]
 city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci_wiki_description']
+
 
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
@@ -35,6 +35,7 @@ for stat in statistics:
         df[f"Municipality{col}_{stat}"] = df.groupby("Municipality")[col].transform(stat)
         df[f"NearestStation{col}_{stat}"] = df.groupby("NearestStation")[col].transform(stat)
 
+df["NearestStation_Purpose_count"] = df.groupby("NearestStation")["Purpose"].transform("count")
 df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 df["NearestStationFloorAreaRatio_rank"] = df.groupby("NearestStation")["FloorAreaRatio"].rank()
