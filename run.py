@@ -53,6 +53,9 @@ df["NearestStationTotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFlo
 # NearestStationごとのAreaのrank特徴量を追加
 df["NearestStationArea_rank"] = df.groupby("NearestStation")["Area"].rank()
 
+# NearestStationごとのMinTimeToNearestStationのrank特徴量を追加
+df["NearestStationMinTimeToNearestStation_rank"] = df.groupby("NearestStation")["MinTimeToNearestStation"].rank()
+
 # Year - BuildingYearの特徴量を追加
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
 
