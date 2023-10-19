@@ -70,6 +70,7 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 for stat in ['mean', 'max', 'min', 'std']:
     df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
     df[f'DistrictName_Area_{stat}'] = df.groupby('DistrictName')['Area'].transform(stat)
+    df[f'DistrictName_TotalFloorArea_{stat}'] = df.groupby('DistrictName')['TotalFloorArea'].transform(stat)
 
 target = "TradePrice"
 not_use_cols = [
@@ -81,6 +82,7 @@ features = [c for c in df.columns if c not in not_use_cols]
 df[target] = np.log1p(df[target])
 train = df[df["Prefecture"]!="Osaka Prefecture"].reset_index(drop=True)
 test = df[df["Prefecture"]=="Osaka Prefecture"].reset_index(drop=True)
+
 
 params = {
     'objective': 'regression',
