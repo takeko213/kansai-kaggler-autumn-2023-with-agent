@@ -56,6 +56,8 @@ df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform(
 df["LandShape_count"] = df.groupby("NearestStation")["LandShape"].transform("count")
 df["NearestStation_Structure_count"] = df.groupby("NearestStation")["Structure"].transform("count")
 
+df["NearestStation_Classification_count"] = df.groupby("NearestStation")["Classification"].transform("count")
+    
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
@@ -64,7 +66,6 @@ cat_cols = [
 
 for col in cat_cols:
     df[col] = df[col].astype('category')
-
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
 for stat in ['mean', 'max', 'min', 'std']:
