@@ -77,6 +77,9 @@ df["Use_count"] = df.groupby("Use")["Use"].transform("count")
 # FloorPlanのCountEncoding特徴量を追加
 df["FloorPlan_count"] = df.groupby("FloorPlan")["FloorPlan"].transform("count")
 
+# Improvement: Add count encoding for DistrictName
+df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform("count")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
