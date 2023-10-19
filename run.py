@@ -55,6 +55,8 @@ df["Use_count"] = df.groupby("Use")["Use"].transform("count")
 df["FloorPlan_count"] = df.groupby("FloorPlan")["FloorPlan"].transform("count")
 df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform("count")
 
+df["Type_count"] = df.groupby("NearestStation")["Type"].transform("count")
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
