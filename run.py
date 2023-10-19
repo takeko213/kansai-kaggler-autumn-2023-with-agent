@@ -56,6 +56,9 @@ df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform(
 df["LandShape_count"] = df.groupby("NearestStation")["LandShape"].transform("count")
 df["NearestStation_Structure_count"] = df.groupby("NearestStation")["Structure"].transform("count")
 
+# NearestStationごとCityPlanningのカウント特徴量を追加
+df["NearestStation_CityPlanning_count"] = df.groupby("NearestStation")["CityPlanning"].transform("count")
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
