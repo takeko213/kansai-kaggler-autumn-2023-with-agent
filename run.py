@@ -42,6 +42,7 @@ df["NearestStationFloorAreaRatio_rank"] = df.groupby("NearestStation")["FloorAre
 df["NearestStationCoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
 df["NearestStationTotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
 df["NearestStationArea_rank"] = df.groupby("NearestStation")["Area"].rank()
+df["DistrictNameBreadth_rank"] = df.groupby("DistrictName")["Breadth"].rank()
 
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
 
