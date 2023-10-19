@@ -80,6 +80,9 @@ df["FloorPlan_count"] = df.groupby("FloorPlan")["FloorPlan"].transform("count")
 # Improvement: Add count encoding for DistrictName
 df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform("count")
 
+# NearestStationのCountEncoding特徴量を追加
+df["NearestStation_count"] = df.groupby("NearestStation")["NearestStation"].transform("count")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
