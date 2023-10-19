@@ -34,6 +34,7 @@ for stat in statistics:
     for col in stat_cols:
         df[f"Municipality{col}_{stat}"] = df.groupby("Municipality")[col].transform(stat)
         df[f"NearestStation{col}_{stat}"] = df.groupby("NearestStation")[col].transform(stat)
+        df[f'DistrictName_MinTimeToNearestStation_{stat}'] = df.groupby('DistrictName')['MinTimeToNearestStation'].transform(stat)
 
 df["NearestStation_Purpose_count"] = df.groupby("NearestStation")["Purpose"].transform("count")
 df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
