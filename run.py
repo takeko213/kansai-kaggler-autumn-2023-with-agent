@@ -10,43 +10,68 @@ from utils import rmse
 cfg = Cfg()
 wandb.init()
 
-# データ読み込み
 org_train = pd.read_csv(cfg.input_dir + "train.csv")
 org_test = pd.read_csv(cfg.input_dir + "test.csv")
 station = pd.read_csv(cfg.input_dir + "station.csv")
 city = pd.read_csv(cfg.input_dir + "city.csv")
 sub = pd.read_csv(cfg.input_dir + "sample_submission.csv")
 
-# 前処理
 station.columns = ["Station", "St_Latitude", "St_Longitude", "St_wiki_description"]
 city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci_wiki_description']
 
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
+station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
 
-# trainとtestを結合しておく
 df = pd.concat([org_train, org_test], ignore_index=True)
-# stationの結合
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
-# cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
-# 特徴量生成
+statistics = ['mean', 'std', 'max', 'min']
+stat_cols = ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeToNearestStation", "BuildingYear", "FloorAreaRatio"]
+for stat in statistics:
+    for col in stat_cols:
+        df[f"Municipality{col}_{stat}"] = df.groupby("Municipality")[col].transform(stat)
+        df[f"NearestStation{col}_{stat}"] = df.groupby("NearestStation")[col].transform(stat)
+
+df["NearestStation_Purpose_count"] = df.groupby("NearestStation")["Purpose"].transform("count")
+df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
+df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
+df["NearestStationFloorAreaRatio_rank"] = df.groupby("NearestStation")["FloorAreaRatio"].rank()
+df["NearestStationCoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
+df["NearestStationTotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
+df["NearestStationArea_rank"] = df.groupby("NearestStation")["Area"].rank()
+
+df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
+
+df["Municipality_count"] = df.groupby("Municipality")["Municipality"].transform("count")
+df["Prefecture_count"] = df.groupby("Prefecture")["Prefecture"].transform("count")
+df["CityPlanning_count"] = df.groupby("CityPlanning")["CityPlanning"].transform("count")
+df["Classification_count"] = df.groupby("Classification")["Classification"].transform("count")
+df["Structure_count"] = df.groupby("Structure")["Structure"].transform("count")
+df["Use_count"] = df.groupby("Use")["Use"].transform("count")
+df["FloorPlan_count"] = df.groupby("FloorPlan")["FloorPlan"].transform("count")
+df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform("count")
+df["LandShape_count"] = df.groupby("NearestStation")["LandShape"].transform("count")
+df["NearestStation_Structure_count"] = df.groupby("NearestStation")["Structure"].transform("count")
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
     "Renovation", "Remarks"
 ]
 
-# カテゴリ変数の処理(ordinal encoding)
-enc = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
-enc.fit(org_train[cat_cols])
-df[cat_cols] = enc.transform(df[cat_cols])
+for col in cat_cols:
+    df[col] = df[col].astype('category')
 
-# True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
-# モデル学習
+for stat in ['mean', 'max', 'min', 'std']:
+    df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
+    df[f'DistrictName_Area_{stat}'] = df.groupby('DistrictName')['Area'].transform(stat)
+    df[f'DistrictName_BuildingYear_{stat}'] = df.groupby('DistrictName')['BuildingYear'].transform(stat)
+    df[f'DistrictName_CoverageRatio_{stat}'] = df.groupby('DistrictName')['CoverageRatio'].transform(stat) # Feature addition
+
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
@@ -66,7 +91,6 @@ params = {
     'seed': cfg.seed
 }
 
-# trainの各都道府県をvalidにしてcross validation
 prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
 
 scores = []
@@ -80,8 +104,6 @@ for valid_pref in prefs:
                           lgb.early_stopping(stopping_rounds=100, verbose=True), 
                           lgb.log_evaluation(100)
                           ])
-    
-    # valid_pred
     vl_pred = model.predict(vl_x, num_iteration=model.best_iteration)
     score = rmse(vl_y, vl_pred)
     scores.append(score)
