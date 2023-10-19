@@ -24,14 +24,10 @@ city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 
-# St_wiki_descriptionの文字数を特徴量として追加
 station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
 
-# trainとtestを結合しておく
 df = pd.concat([org_train, org_test], ignore_index=True)
-# stationの結合
 df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
-# cityの結合
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
 statistics = ['mean', 'std', 'max', 'min']
@@ -41,65 +37,38 @@ for stat in statistics:
         df[f"Municipality{col}_{stat}"] = df.groupby("Municipality")[col].transform(stat)
         df[f"NearestStation{col}_{stat}"] = df.groupby("NearestStation")[col].transform(stat)
 
-# rank特徴量を追加
 df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
-# NearestStationごとのFloorAreaRatioとCoverageRatioのrank特徴量を追加
 df["NearestStationFloorAreaRatio_rank"] = df.groupby("NearestStation")["FloorAreaRatio"].rank()
 df["NearestStationCoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
-
-# NearestStationごとのTotalFloorAreaのrank特徴量を追加
 df["NearestStationTotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
-# NearestStationごとのAreaのrank特徴量を追加
 df["NearestStationArea_rank"] = df.groupby("NearestStation")["Area"].rank()
 
-# Year - BuildingYearの特徴量を追加
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
 
-# MunicipalityのCountEncoding特徴量を追加
 df["Municipality_count"] = df.groupby("Municipality")["Municipality"].transform("count")
-
-# PrefectureのCountEncoding特徴量を追加
 df["Prefecture_count"] = df.groupby("Prefecture")["Prefecture"].transform("count")
-
-# CityPlanningのCountEncoding特徴量を追加
 df["CityPlanning_count"] = df.groupby("CityPlanning")["CityPlanning"].transform("count")
-
-# Code Improvement: Add count encoding for Classification
 df["Classification_count"] = df.groupby("Classification")["Classification"].transform("count")
-
-# StructureのCountEncoding特徴量を追加
 df["Structure_count"] = df.groupby("Structure")["Structure"].transform("count")
-
-# UseのCountEncoding特徴量を追加
 df["Use_count"] = df.groupby("Use")["Use"].transform("count")
-
-# FloorPlanのCountEncoding特徴量を追加
 df["FloorPlan_count"] = df.groupby("FloorPlan")["FloorPlan"].transform("count")
-
-# Improvement: Add count encoding for DistrictName
 df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform("count")
 
-# 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
     "Renovation", "Remarks"
 ]
 
-# カテゴリ変数の処理(ordinal encoding)
-enc = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
-enc.fit(org_train[cat_cols])
-df[cat_cols] = enc.transform(df[cat_cols])
+for col in cat_cols:
+    df[col] = df[col].astype('category')
 
-# True/Falseを1/0変換
 df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 
-# NearestStationごとのAreaの統計量を追加
 for stat in ['mean', 'max', 'min', 'std']:
     df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
-    
-# モデル学習
+
 target = "TradePrice"
 not_use_cols = [
     "row_id", "Prefecture", "Municipality", "DistrictName", "NearestStation",
@@ -119,7 +88,6 @@ params = {
     'seed': cfg.seed
 }
 
-# trainの各都道府県をvalidにしてcross validation
 prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
 
 scores = []
