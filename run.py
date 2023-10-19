@@ -74,6 +74,9 @@ df["Structure_count"] = df.groupby("Structure")["Structure"].transform("count")
 # UseのCountEncoding特徴量を追加
 df["Use_count"] = df.groupby("Use")["Use"].transform("count")
 
+# LandShapeのCountEncoding特徴量を追加
+df["LandShape_count"] = df.groupby("LandShape")["LandShape"].transform("count")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
