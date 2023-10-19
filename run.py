@@ -56,6 +56,9 @@ df["NearestStationArea_rank"] = df.groupby("NearestStation")["Area"].rank()
 # Year - BuildingYearの特徴量を追加
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
 
+# MunicipalityのCountEncoding特徴量を追加
+df["Municipality_count"] = df.groupby("Municipality")["Municipality"].transform("count")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
