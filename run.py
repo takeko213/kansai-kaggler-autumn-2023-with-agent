@@ -68,6 +68,9 @@ df["CityPlanning_count"] = df.groupby("CityPlanning")["CityPlanning"].transform(
 # Code Improvement: Add count encoding for Classification
 df["Classification_count"] = df.groupby("Classification")["Classification"].transform("count")
 
+# Code Improvement: Add count encoding for Purpose
+df["Purpose_count"] = df.groupby("Purpose")["Purpose"].transform("count")
+
 # 特徴量生成
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
