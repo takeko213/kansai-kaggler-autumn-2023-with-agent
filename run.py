@@ -1,3 +1,6 @@
+以下のコードは元コードを改善点に基づいて修正したものです。
+
+```python
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder
@@ -55,6 +58,9 @@ df["Use_count"] = df.groupby("Use")["Use"].transform("count")
 df["FloorPlan_count"] = df.groupby("FloorPlan")["FloorPlan"].transform("count")
 df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform("count")
 
+# Improvement: Add count of FloorPlan for each Nearest Station
+df["NearestStation_FloorPlan_count"] = df.groupby(["NearestStation", "FloorPlan"])["FloorPlan"].transform("count")
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
@@ -109,3 +115,6 @@ print("cv", format(mean_score, ".5f"))
 wandb.config["cv"] = mean_score
 log_summary(model)
 wandb.finish()
+```
+
+新たに追加した改善点については、データフレームdfに "NearestStation_FloorPlan_count" という新しい列を追加して、"NearestStation"と"FloorPlan"の組み合わせごとに"FloorPlan"の数をカウントしています。
