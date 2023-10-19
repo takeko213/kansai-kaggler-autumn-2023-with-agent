@@ -41,7 +41,7 @@ for stat in statistics:
         df[f"Municipality{col}_{stat}"] = df.groupby("Municipality")[col].transform(stat)
         df[f"NearestStation{col}_{stat}"] = df.groupby("NearestStation")[col].transform(stat)
 
-# rank特徴量を追加
+# rank特徴量も追加
 df["MunicipalityTotalFloorArea_rank"] = df.groupby("Municipality")["TotalFloorArea"].rank()
 df["MunicipalityFloorAreaRatio_rank"] = df.groupby("Municipality")["FloorAreaRatio"].rank()
 # NearestStationごとのFloorAreaRatioとCoverageRatioのrank特徴量を追加
@@ -50,6 +50,9 @@ df["NearestStationCoverageRatio_rank"] = df.groupby("NearestStation")["CoverageR
 
 # NearestStationごとのTotalFloorAreaのrank特徴量を追加
 df["NearestStationTotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
+
+# NearestStationごとのFrontageのrank特徴量を追加
+df["NearestStationFrontage_rank"] = df.groupby("NearestStation")["Frontage"].rank()
 
 # Year - BuildingYearの特徴量を追加
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
