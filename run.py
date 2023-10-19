@@ -29,7 +29,8 @@ df = df.merge(station, left_on="NearestStation", right_on="Station", how="left")
 df = df.merge(city, on=["Prefecture", "Municipality"], how="left")
 
 statistics = ['mean', 'std', 'max', 'min']
-stat_cols = ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeToNearestStation", "BuildingYear", "FloorAreaRatio"]
+stat_cols = ["CoverageRatio", "Breadth", "TotalFloorArea", "Frontage", "MinTimeToNearestStation", 
+             "BuildingYear", "FloorAreaRatio"]
 for stat in statistics:
     for col in stat_cols:
         df[f"Municipality{col}_{stat}"] = df.groupby("Municipality")[col].transform(stat)
@@ -55,12 +56,14 @@ df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform(
 df["LandShape_count"] = df.groupby("NearestStation")["LandShape"].transform("count")
 df["NearestStation_Structure_count"] = df.groupby("NearestStation")["Structure"].transform("count")
 
+# 加えた特徴量
+df["NearestStation_Use_count"] = df.groupby("NearestStation")["Use"].transform("count")
+
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
     "Use", "Purpose", "Direction", "Classification", "CityPlanning",
     "Renovation", "Remarks"
 ]
-
 for col in cat_cols:
     df[col] = df[col].astype('category')
 
@@ -88,7 +91,8 @@ params = {
     'seed': cfg.seed
 }
 
-prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 'Nara Prefecture', 'Wakayama Prefecture']
+prefs = ['Mie Prefecture', 'Shiga Prefecture', 'Kyoto Prefecture', 'Hyogo Prefecture', 
+         'Nara Prefecture', 'Wakayama Prefecture']
 
 scores = []
 for valid_pref in prefs:
