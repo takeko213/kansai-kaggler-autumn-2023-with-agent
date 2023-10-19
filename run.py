@@ -10,20 +10,18 @@ from utils import rmse
 cfg = Cfg()
 wandb.init()
 
-# データ読み込み
+
 org_train = pd.read_csv(cfg.input_dir + "train.csv")
 org_test = pd.read_csv(cfg.input_dir + "test.csv")
 station = pd.read_csv(cfg.input_dir + "station.csv")
 city = pd.read_csv(cfg.input_dir + "city.csv")
 sub = pd.read_csv(cfg.input_dir + "sample_submission.csv")
 
-# 前処理
 station.columns = ["Station", "St_Latitude", "St_Longitude", "St_wiki_description"]
 city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci_wiki_description']
 
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
-
 station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
 
 df = pd.concat([org_train, org_test], ignore_index=True)
@@ -55,6 +53,7 @@ df["Use_count"] = df.groupby("Use")["Use"].transform("count")
 df["FloorPlan_count"] = df.groupby("FloorPlan")["FloorPlan"].transform("count")
 df["DistinctName_count"] = df.groupby("DistrictName")["DistrictName"].transform("count")
 df["LandShape_count"] = df.groupby("NearestStation")["LandShape"].transform("count")
+df["NearestStation_Structure_count"] = df.groupby("NearestStation")["Structure"].transform("count")
 
 cat_cols = [
     "Type", "Region", "FloorPlan", "LandShape", "Structure",
