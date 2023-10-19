@@ -70,6 +70,7 @@ df["FrontageIsGreaterFlag"] = df["FrontageIsGreaterFlag"].astype(int)
 for stat in ['mean', 'max', 'min', 'std']:
     df[f'NearestStation_Area_{stat}'] = df.groupby('NearestStation')['Area'].transform(stat)
     df[f'DistrictName_Area_{stat}'] = df.groupby('DistrictName')['Area'].transform(stat)
+    df[f'DistrictName_BuildingYear_{stat}'] = df.groupby('DistrictName')['BuildingYear'].transform(stat) # Feature addition
 
 target = "TradePrice"
 not_use_cols = [
