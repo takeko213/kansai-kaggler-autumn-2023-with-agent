@@ -19,7 +19,6 @@ sub = pd.read_csv(cfg.input_dir + "sample_submission.csv")
 station.columns = ["Station", "St_Latitude", "St_Longitude", "St_wiki_description"]
 city.columns = ['Prefecture', 'Municipality', 'Ci_Latitude', 'Ci_Longitude', 'Ci_wiki_description']
 
-
 station["St_wiki_description"] = station["St_wiki_description"].str.lower()
 city["Ci_wiki_description"] = city["Ci_wiki_description"].str.lower()
 station['St_wiki_description_length'] = station['St_wiki_description'].str.len()
@@ -42,6 +41,7 @@ df["NearestStationFloorAreaRatio_rank"] = df.groupby("NearestStation")["FloorAre
 df["NearestStationCoverageRatio_rank"] = df.groupby("NearestStation")["CoverageRatio"].rank()
 df["NearestStationTotalFloorArea_rank"] = df.groupby("NearestStation")["TotalFloorArea"].rank()
 df["NearestStationArea_rank"] = df.groupby("NearestStation")["Area"].rank()
+df["DistrictNameTotalFloorArea_rank"] = df.groupby("DistrictName")["TotalFloorArea"].rank()
 
 df["YearBuildingYear_diff"] = df["Year"] - df["BuildingYear"]
 
